@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void PushEventHandler(GameObject chess);
-public delegate void TakeEventHandler(GameObject chess);
-public delegate void RestoreEventHandler(GameObject chess);
-
 public class PoolManager : MonoBehaviour
 {
     public static event PushEventHandler PushEvent; //刚加入工作区事件(棋子刚被创建就订阅一堆事件)
