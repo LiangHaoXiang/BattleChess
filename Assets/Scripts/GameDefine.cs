@@ -49,6 +49,11 @@ public delegate void PushEventHandler(GameObject chess);
 public delegate void TakeEventHandler(GameObject chess);
 public delegate void RestoreEventHandler(GameObject chess);
 
+public delegate void ChooseEventHandler();
+public delegate void EatEventHandler(GameObject chess);
+
+public delegate void PointCellClickEventHandler(Vector2 cell);
+
 public class GameDefine{
 
 }

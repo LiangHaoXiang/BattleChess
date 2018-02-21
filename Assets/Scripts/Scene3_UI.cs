@@ -7,18 +7,7 @@ public class Scene3_UI : MonoBehaviour
 {
     private Transform GridsTrans;
     public static GameObject[,] cells;
-    /// <summary>
-    /// 场景cell或棋子与平面直角坐标(x方向0-8，y方向0-9)之间的映射关系
-    /// </summary>
-    public static Dictionary<GameObject, Vector2> coords;
-    /// <summary>
-    /// 棋子与他现在二维坐标的映射
-    /// </summary>
-    public static Dictionary<GameObject, Vector2> chess2Vector;
-    /// <summary>
-    /// 棋子二维坐标与自身的映射
-    /// </summary>
-    public static Dictionary<Vector2, GameObject> vector2Chess;
+
     void Awake()
     {
         GridsTrans = GameObject.Find("Grids").transform;
@@ -32,22 +21,24 @@ public class Scene3_UI : MonoBehaviour
                 cells[x, y].GetComponent<Image>().enabled = false;
             }
         }
+        GameCache.SetCoords(cells);     //将场景找到的cell作为参数，处理写入映射缓存
 
-        coords = new Dictionary<GameObject, Vector2>();
-        for (int x = 0; x <= 8; x++)
-        {
-            for (int y = 0; y <= 9; y++)
-            {
-                coords.Add(cells[x, y], new Vector2(x, y));
-            }
-        }
+    }
 
-        //foreach(GameObject cell in cells)
+    //临时
+    public GameObject redJu;
+    public List<GameObject> chessList;
+    void Start()
+    {
+        redJu = GameObject.Find("红車");
+        chessList = new List<GameObject>();
+        chessList.Add(redJu);
+        chessList.Add(GameObject.Find("红車 (2)"));
+        chessList.Add(GameObject.Find("黑車"));
+        //foreach (KeyValuePair<Vector3, Vector2> kvp in GameCache.Coords)
         //{
-        //    cell.GetComponent<Image>().enabled = false;
+        //    Debug.Log(kvp.Key + "   " + kvp.Value);
         //}
-
-        chess2Vector = new Dictionary<GameObject, Vector2>();
-        vector2Chess = new Dictionary<Vector2, GameObject>();
+        GameCache.SetChessAndVectorDic(chessList);
     }
 }
