@@ -8,7 +8,7 @@ public class PointCell : MonoBehaviour
     public Vector2 point;
     [HideInInspector]
     public Transform parent;
-    public static event PointCellClickEventHandler PointCellClickEvent;
+    public static event MoveEventHandler PointCellClickEvent;
 
     void Awake()
     {

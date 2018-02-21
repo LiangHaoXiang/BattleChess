@@ -75,7 +75,6 @@ public class Chess_Ju : BaseChess
             GameObject otherChess = vector2Chess[value];
             if(otherChess.tag != gameObject.tag)    //判断是否为己方棋子 tag在编辑器里设置为"Red"或"Black"
             {
-                print("发现敌方棋子");
                 canMovePoints.Add(value);
             }
             findOtherChess = true;

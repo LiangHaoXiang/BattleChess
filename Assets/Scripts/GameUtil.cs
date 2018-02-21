@@ -21,14 +21,28 @@ public class GameUtil
     }
 
     /// <summary>
-    /// 判断两个二维坐标是否相等
+    /// 判断两个二维坐标是否相等，微弱的差别可忽略
     /// </summary>
     /// <param name="a"></param>
     /// <param name="b"></param>
     /// <returns></returns>
     public static bool CompareVector2(Vector2 a, Vector2 b)
     {
-        if ((a.x == b.x) && (a.y == b.y))
+        if (((int)a.x == (int)b.x) && ((int)a.y == (int)b.y))
+            return true;
+        else
+            return false;
+    }
+
+    /// <summary>
+    /// 判断两个三维坐标是否相等，微弱的差别可忽略
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    public static bool CompareVector3(Vector3 a,Vector3 b)
+    {
+        if (((int)a.x == (int)b.x) && ((int)a.y == (int)b.y) && ((int)a.z == (int)b.z))
             return true;
         else
             return false;

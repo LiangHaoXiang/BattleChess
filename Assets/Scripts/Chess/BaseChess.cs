@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public abstract class BaseChess : MonoBehaviour
 {
     public static event ChooseEventHandler ChooseEvent;//选择本棋子事件，通知其他棋子为取消选择状态
+    public static event TipsKillEventHandler TipsKillEvent;
     public static event EatEventHandler EatEvent;
+    public static event MoveEventHandler MoveEvent;
 
     //protected CreateManager createManager;
     protected ChessReciprocalState chessReciprocalState;    //棋子交互状态
@@ -22,6 +24,7 @@ public abstract class BaseChess : MonoBehaviour
         PoolManager.RestoreEvent += CancelSubscribeEvents;
 
         PointCell.PointCellClickEvent += Move;
+        MoveEvent += Move;
     }
 
     public virtual void Update()
@@ -56,43 +59,11 @@ public abstract class BaseChess : MonoBehaviour
                                                             "easetype", iTween.EaseType.linear));
                         break;
                     }
+                    else if (chessReciprocalState != ChessReciprocalState.moving)
+                    {
+                        CancelChoose();
+                    }
                 }
-                #region 旧
-                //for (int i = 0; i < canMovePos.Length; i++)   //将所有可移动的二维坐标转化成网格点三维坐标
-                //{
-                //    int x = (int)canMovePoints[i].x;
-                //    int y = (int)canMovePoints[i].y;
-                //    canMovePos[i] = Scene3_UI.cells[x, y].transform.position;
-                //}
-
-                //for (int i = 0; i < canMovePoints.Length; i++)
-                //{
-                //    //鼠标点击在可移动点附近范围内，即可走步
-                //    if (canMovePos[i].x - 30 <= Input.mousePosition.x && Input.mousePosition.x <= canMovePos[i].x + 30 &&
-                //        canMovePos[i].y - 27.5 <= Input.mousePosition.y && Input.mousePosition.y <= canMovePos[i].y + 27.5)
-                //    {
-                //        //若点击位置存在其他棋子 且 是敌方棋子，那就是吃
-                //        if (GameCache.Vector2Chess.ContainsKey(canMovePoints[i]))
-                //        {
-                //            GameObject otherChess = GameCache.Vector2Chess[canMovePoints[i]];
-                //            if (otherChess.tag != gameObject.tag)
-                //            {
-                //                EatEvent(otherChess);   //吃
-                //            }
-                //        }
-
-                //        chessReciprocalState = ChessReciprocalState.moving;//这里在移动的时候时间是0.1秒，这个时间段的状态改成moving状态，还需要改进，否则会有bug
-                //        //iTween.MoveTo(gameObject, iTween.Hash("time", 0.1f, "position", canMovePos[i],
-                //        //    "easetype", iTween.EaseType.linear, "oncomplete", "TBS", "oncompletetarget", GameObject.Find("GameController")));
-                //        iTween.MoveTo(gameObject, iTween.Hash("time", 0.1f, "position", canMovePos[i],
-                //                                            "easetype", iTween.EaseType.linear));
-                //    }
-                //    else if (chessReciprocalState != ChessReciprocalState.moving)
-                //    {
-                //        CancelChoose();
-                //    }
-                //}
-#endregion
             }
             else
             {
@@ -130,6 +101,15 @@ public abstract class BaseChess : MonoBehaviour
             //    }
             //}
         }
+    }
+    /// <summary>
+    /// 提示可吃事件触发，自身状态被标记为可吃
+    /// </summary>
+    /// <param name="point"></param>
+    public void TipsBeTarget(Vector2 point)
+    {
+        if (GameUtil.CompareVector2(GameCache.Chess2Vector[gameObject], point))
+            chessSituationState = ChessSituationState.BeTaget;
     }
     /// <summary>
     /// 吃
@@ -202,7 +182,12 @@ public abstract class BaseChess : MonoBehaviour
         //if ((GameController.whoWalk == 着法状态.到红方走 && GetComponent<ChessCamp>().camp == Camp.Red) ||
         //    (GameController.whoWalk == 着法状态.到黑方走 && GetComponent<ChessCamp>().camp == Camp.Black))
         //{
-        if (chessReciprocalState == ChessReciprocalState.unChoosed)
+        if(chessSituationState == ChessSituationState.BeTaget) //若被标记为红点，就是要吃你
+        {
+            MoveEvent(GameCache.Chess2Vector[gameObject]);
+            EatEvent(gameObject);            
+        }
+        else if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
         {
             //ChooseEvent();
             BeChoosed();
@@ -227,11 +212,13 @@ public abstract class BaseChess : MonoBehaviour
         {
             int x = (int)canMovePoints[i].x;
             int y = (int)canMovePoints[i].y;
+
             Scene3_UI.cells[x, y].GetComponent<Image>().enabled = true;
             //若可移动点上存在其他棋子，那肯定就是敌方棋子了，提示可以击杀之
             if (GameCache.Vector2Chess.ContainsKey(canMovePoints[i]))
             {
                 GameCache.Vector2Chess[canMovePoints[i]].transform.FindChild("redpoint").gameObject.SetActive(true);
+                TipsKillEvent(canMovePoints[i]);
             }
         }
         chessReciprocalState = ChessReciprocalState.beChoosed;
@@ -244,29 +231,38 @@ public abstract class BaseChess : MonoBehaviour
     {
         //将被选中时的所有变化还原
         Reset();
-        //for (int i = 0; i < PoolManager.work_List.Count; i++)
-        //{
-        //    PoolManager.work_List[i].transform.FindChild("被成为目标").gameObject.SetActive(false);
-        //}
+        for (int i = 0; i < PoolManager.work_List.Count; i++)
+        {
+            PoolManager.work_List[i].transform.FindChild("redpoint").gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
-    /// 重置棋子状态
+    /// 重置棋子交互状态
     /// </summary>
     public void ResetChessReciprocalState()
     {
         if (chessReciprocalState != ChessReciprocalState.unChoosed)
-            chessReciprocalState = ChessReciprocalState.unChoosed;
+            chessReciprocalState = ChessReciprocalState.unChoosed; 
+    }
+    /// <summary>
+    /// 重置棋子情境状态
+    /// </summary>
+    public void ResetChessSituationState()
+    {
+        if (chessSituationState != ChessSituationState.Idle)
+            chessSituationState = ChessSituationState.Idle;
     }
 
     protected void Reset()
     {
         transform.FindChild("baibian").gameObject.SetActive(false);
-        //for (int i = 0; i < CalculateUtil.grids.Length; i++)
-        //{
-        //    GameObject.Find("Grids").transform.GetChild(i).GetComponent<Image>().enabled = false;
-        //}
+        foreach(GameObject cell in Scene3_UI.cells)
+        {
+            cell.GetComponent<Image>().enabled = false;
+        }
         ResetChessReciprocalState();
+        ResetChessSituationState();
     }
     /// <summary>
     /// 订阅一堆的事件
@@ -277,6 +273,7 @@ public abstract class BaseChess : MonoBehaviour
         if (chess == gameObject)
         {
             ChooseEvent += new ChooseEventHandler(CancelChoose);//订阅取消选择事件
+            TipsKillEvent += TipsBeTarget;
             EatEvent += new EatEventHandler(Eat);               //订阅吃事件
             //GameController.ResetChessReciprocalStateEvent += CancelChoose; //订阅重置棋子状态事件
             //Chess_Boss.DetectBeAttackedEvent += DetectJiangJun;            //订阅检测将军事件
@@ -291,6 +288,7 @@ public abstract class BaseChess : MonoBehaviour
         if (chess == gameObject)
         {
             EatEvent -= Eat;
+            TipsKillEvent -= TipsBeTarget;
             ChooseEvent -= CancelChoose;
             //GameController.ResetChessReciprocalStateEvent -= CancelChoose;
             //Chess_Boss.DetectBeAttackedEvent -= DetectJiangJun;

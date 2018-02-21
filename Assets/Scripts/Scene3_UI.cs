@@ -26,19 +26,32 @@ public class Scene3_UI : MonoBehaviour
     }
 
     //临时
-    public GameObject redJu;
+    //public GameObject redJu;
     public List<GameObject> chessList;
+    public CreateManager createManager;
     void Start()
     {
-        redJu = GameObject.Find("红車");
-        chessList = new List<GameObject>();
-        chessList.Add(redJu);
-        chessList.Add(GameObject.Find("红車 (2)"));
-        chessList.Add(GameObject.Find("黑車"));
+        //redJu = GameObject.Find("红車");
+        //chessList = new List<GameObject>();
+        //chessList.Add(redJu);
+        //chessList.Add(GameObject.Find("红車 (2)"));
+        //chessList.Add(GameObject.Find("黑車"));
+        //GameCache.SetChessAndVectorDic(chessList);
+        createManager = CreateManager.Instance;
+        createManager.InitChessBoard();
+
+        //Debug.Log("先打印");
+        //Debug.Log(PoolManager.work_List[0].transform.position);
         //foreach (KeyValuePair<Vector3, Vector2> kvp in GameCache.Coords)
         //{
-        //    Debug.Log(kvp.Key + "   " + kvp.Value);
+        //    Debug.Log("coords的键值对：" + kvp.Key + "   " + kvp.Value);
+        //    if (GameUtil.CompareVector3(kvp.Key, PoolManager.work_List[0].transform.position))
+        //    {
+        //        Debug.Log("找到相等的三维坐标， ");
+        //        Debug.Log(kvp.Value);
+        //    }
         //}
-        GameCache.SetChessAndVectorDic(chessList);
+        GameCache.SetChessAndVectorDic(PoolManager.work_List);
+
     }
 }

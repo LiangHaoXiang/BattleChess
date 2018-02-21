@@ -26,7 +26,10 @@ public class GameCache
             {
                 for (int y = 0; y <= 9; y++)
                 {
-                    coords.Add(cells[x, y].transform.position, new Vector2(x, y));
+                    int a = (int)cells[x, y].transform.position.x;      //强制为整形，消除微弱差别的影响
+                    int b = (int)cells[x, y].transform.position.y;
+                    int c = (int)cells[x, y].transform.position.z;
+                    coords.Add(new Vector3(a, b, c), new Vector2(x, y));
                 }
             }
         }
@@ -44,8 +47,12 @@ public class GameCache
         for (int i = 0; i < chessList.Count; i++)
         {
             Vector3 pos = chessList[i].transform.position;
-            chess2Vector.Add(chessList[i], coords[pos]);
-            vector2Chess.Add(coords[pos], chessList[i]);
+            int a = (int)pos.x;      //强制为整形，消除微弱差别的影响
+            int b = (int)pos.y;
+            int c = (int)pos.z;
+            Vector3 v3 = new Vector3(a, b, c);
+            chess2Vector.Add(chessList[i], coords[v3]);
+            vector2Chess.Add(coords[v3], chessList[i]);
         }
     }
 

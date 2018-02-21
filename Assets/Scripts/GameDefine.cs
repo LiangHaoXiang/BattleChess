@@ -41,6 +41,7 @@ public enum ChessSituationState
     Idle,                   //安然无恙
     Attacking,              //将军状态
     BeAttacked,             //只有帅/将才拥有的被将军状态
+    BeTaget,                //被成为目标状态，敌人可吃
     NoWayOut,               //无路可走状态
     Death,                  //阵亡
 }
@@ -50,9 +51,10 @@ public delegate void TakeEventHandler(GameObject chess);
 public delegate void RestoreEventHandler(GameObject chess);
 
 public delegate void ChooseEventHandler();
+public delegate void TipsKillEventHandler(Vector2 point);                //提示可以吃子
 public delegate void EatEventHandler(GameObject chess);
 
-public delegate void PointCellClickEventHandler(Vector2 cell);
+public delegate void MoveEventHandler(Vector2 point);
 
 public class GameDefine{
 
