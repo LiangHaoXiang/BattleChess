@@ -42,7 +42,6 @@ public abstract class BaseChess : MonoBehaviour
         if (chessReciprocalState == ChessReciprocalState.beChoosed)
         {
             Vector2[] canMovePoints = CanMovePoints(GameCache.Chess2Vector, GameCache.Vector2Chess).ToArray();
-            Vector3[] canMovePos = new Vector3[canMovePoints.Length];
 
             if (canMovePoints.Length > 0)
             {
@@ -81,26 +80,26 @@ public abstract class BaseChess : MonoBehaviour
     /// <param name="realMove">是真的移动还是假设移动？</param>
     public void MoveByAI(Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess, Vector2 target, bool realMove)
     {
-        Vector2[] canMovePoints = CanMovePoints(chess2Vector, vector2Chess).ToArray();
-        //真正的移动
-        if (realMove)
-        {
+        //Vector2[] canMovePoints = CanMovePoints(chess2Vector, vector2Chess).ToArray();
+        ////真正的移动
+        //if (realMove)
+        //{
 
-        }
-        else//假设移动
-        {
-            //for (int i = 0; i < canMovePoints.Length; i++)
-            //{
-            //    if (target == canMovePoints[i])
-            //    {
-            //        //假设移动完后，获取移动后的棋局状况 然后再检测有没有将军
-            //        ArrayList moveAssumptionData = CalculateUtil.MoveAssumption(gameObject, target);
-            //        //这里假设后的检测将军需要检测是否是我方受将军，是则不允许这么走
-            //        //.......TODO
-            //        Chess_Boss.DetectBeAttacked((Dictionary<GameObject, Vector2>)moveAssumptionData[0], (Dictionary<Vector2, GameObject>)moveAssumptionData[1]);
-            //    }
-            //}
-        }
+        //}
+        //else//假设移动
+        //{
+        //    for (int i = 0; i < canMovePoints.Length; i++)
+        //    {
+        //        if (target == canMovePoints[i])
+        //        {
+        //            //假设移动完后，获取移动后的棋局状况 然后再检测有没有将军
+        //            ArrayList moveAssumptionData = CalculateUtil.MoveAssumption(gameObject, target);
+        //            //这里假设后的检测将军需要检测是否是我方受将军，是则不允许这么走
+        //            //.......TODO
+        //            Chess_Boss.DetectBeAttacked((Dictionary<GameObject, Vector2>)moveAssumptionData[0], (Dictionary<Vector2, GameObject>)moveAssumptionData[1]);
+        //        }
+        //    }
+        //}
     }
     /// <summary>
     /// 提示可吃事件触发，自身状态被标记为可吃
@@ -118,7 +117,8 @@ public abstract class BaseChess : MonoBehaviour
     {
         if (chess == gameObject)
         {
-            //CancelSubscribeEvents();//需要取消订阅事件，否则回收物体后可能会空引用
+            //TODO...战斗，比较属性。
+            //Battle()  
             Killed();
         }
     }
@@ -189,7 +189,7 @@ public abstract class BaseChess : MonoBehaviour
         }
         else if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
         {
-            //ChooseEvent();
+            ChooseEvent();
             BeChoosed();
         }
         else

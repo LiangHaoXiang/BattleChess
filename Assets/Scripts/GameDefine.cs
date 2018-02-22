@@ -50,10 +50,24 @@ public delegate void PushEventHandler(GameObject chess);
 public delegate void TakeEventHandler(GameObject chess);
 public delegate void RestoreEventHandler(GameObject chess);
 
+/// <summary>
+/// //选择本棋子事件，通知其他棋子为取消选择状态
+/// </summary>
 public delegate void ChooseEventHandler();
-public delegate void TipsKillEventHandler(Vector2 point);                //提示可以吃子
+/// <summary>
+/// 提示可以吃子
+/// </summary>
+/// <param name="point">传入可吃子的位置信息</param>
+public delegate void TipsKillEventHandler(Vector2 point);
+/// <summary>
+/// 吃事件，
+/// </summary>
+/// <param name="chess">一般传自身棋子，来过滤掉其他棋子的处理</param>
 public delegate void EatEventHandler(GameObject chess);
-
+/// <summary>
+/// 移动，选中状态的棋子才会动，其他会过滤掉
+/// </summary>
+/// <param name="point">传入目标位置</param>
 public delegate void MoveEventHandler(Vector2 point);
 
 public class GameDefine{

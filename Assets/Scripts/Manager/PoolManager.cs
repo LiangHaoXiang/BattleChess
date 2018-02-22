@@ -58,12 +58,12 @@ public class PoolManager : MonoBehaviour
 
     public static void SetParentToWork(GameObject chess)
     {
-        chess.transform.parent = workChesses;
+        chess.transform.SetParent(workChesses, true);
     }
 
     public static void SetParentToRestore(GameObject chess)
     {
-        chess.transform.parent = restoreChesses;
+        chess.transform.SetParent(restoreChesses, true);
     }
 }
 

@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController instance = null;
+    private static GameController instance = null;
     public static bool hadLoad = false;
+
+    public static GameController Instance { get { return instance; } }
 
     void Awake()
     {
@@ -28,6 +30,9 @@ public class GameController : MonoBehaviour
     {
         if (scene.isLoaded)
         {
+            GameCache.ClearMaps();
+            GameCache.ClearChessVectorDic();
+
             if (scene.name.Equals("scene3(Main)"))  //若主场景加载完毕并切换到主场景
             {
                 Debug.Log("主场景已加载完毕并切换到主场景");
@@ -42,4 +47,14 @@ public class GameController : MonoBehaviour
 	void Update () {
 		
 	}
+
+    /// <summary>
+    /// 更新游戏信息
+    /// </summary>
+    /// <returns></returns>
+    public void UpdateGameData()
+    {
+        GameCache.UpdateChessData();
+        GameCache.SetMaps();
+    }
 }

@@ -5,11 +5,29 @@ using UnityEngine.UI;
 
 public class Scene3_UI : MonoBehaviour
 {
+    #region 左
+    private Text blackAllTime;
+    private Text blackStepTime;
+    private Text redAllTime;
+    private Text redStepTime;
+    #endregion
+    #region 中
     private Transform GridsTrans;
     public static GameObject[,] cells;
+    private GameObject beginBtn;
+    #endregion
+    #region 右
+    private GameObject blackDetailPanel;
+    private GameObject redDetailPanel;
+    #endregion
 
     void Awake()
     {
+        blackAllTime = GameObject.Find("Canvas/Left/Black/AllTime/Value").GetComponent<Text>();
+        blackStepTime = GameObject.Find("Canvas/Left/Black/StepTime/Value").GetComponent<Text>();
+        redAllTime = GameObject.Find("Canvas/Left/Red/AllTime/Value").GetComponent<Text>();
+        redStepTime = GameObject.Find("Canvas/Left/Red/StepTime/Value").GetComponent<Text>();
+
         GridsTrans = GameObject.Find("Grids").transform;
         cells = new GameObject[9, 10];
         for (int y = 0; y <= 9; y++)
@@ -23,6 +41,9 @@ public class Scene3_UI : MonoBehaviour
         }
         GameCache.SetCoords(cells);     //将场景找到的cell作为参数，处理写入映射缓存
 
+        beginBtn = GameObject.Find("Canvas/Middle/BeginBtn");
+        blackDetailPanel = GameObject.Find("Canvas/Right/BlackAttrDetail");
+        redDetailPanel = GameObject.Find("Canvas/Right/RedAttrDetail");
     }
 
     //临时
@@ -31,14 +52,20 @@ public class Scene3_UI : MonoBehaviour
     public CreateManager createManager;
     void Start()
     {
+        blackAllTime.text = "00:00";
+        blackStepTime.text = "00:00";
+        redAllTime.text = "00:00";
+        redStepTime.text = "00:00";
+        blackDetailPanel.SetActive(false);
+        redDetailPanel.SetActive(false);
+
         //redJu = GameObject.Find("红車");
         //chessList = new List<GameObject>();
         //chessList.Add(redJu);
         //chessList.Add(GameObject.Find("红車 (2)"));
         //chessList.Add(GameObject.Find("黑車"));
-        //GameCache.SetChessAndVectorDic(chessList);
-        createManager = CreateManager.Instance;
-        createManager.InitChessBoard();
+        //GameCache.SetChessVectorDic(chessList);
+
 
         //Debug.Log("先打印");
         //Debug.Log(PoolManager.work_List[0].transform.position);
@@ -51,7 +78,19 @@ public class Scene3_UI : MonoBehaviour
         //        Debug.Log(kvp.Value);
         //    }
         //}
-        GameCache.SetChessAndVectorDic(PoolManager.work_List);
 
+
+    }
+
+    /// <summary>
+    /// 开始按钮点击事件
+    /// </summary>
+    public void OnBeginClick()
+    {
+        createManager = CreateManager.Instance;
+        createManager.InitChessBoard();
+        GameController.Instance.UpdateGameData();
+
+        beginBtn.SetActive(false);
     }
 }
