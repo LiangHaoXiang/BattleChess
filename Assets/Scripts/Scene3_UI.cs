@@ -23,10 +23,10 @@ public class Scene3_UI : MonoBehaviour
 
     void Awake()
     {
-        blackAllTime = GameObject.Find("Canvas/Left/Black/AllTime/Value").GetComponent<Text>();
-        blackStepTime = GameObject.Find("Canvas/Left/Black/StepTime/Value").GetComponent<Text>();
-        redAllTime = GameObject.Find("Canvas/Left/Red/AllTime/Value").GetComponent<Text>();
-        redStepTime = GameObject.Find("Canvas/Left/Red/StepTime/Value").GetComponent<Text>();
+        blackAllTime = GameObject.Find("Canvas/Left/GameMode/Black/AllTime/Value").GetComponent<Text>();
+        blackStepTime = GameObject.Find("Canvas/Left/GameMode/Black/StepTime/Value").GetComponent<Text>();
+        redAllTime = GameObject.Find("Canvas/Left/GameMode/Red/AllTime/Value").GetComponent<Text>();
+        redStepTime = GameObject.Find("Canvas/Left/GameMode/Red/StepTime/Value").GetComponent<Text>();
 
         GridsTrans = GameObject.Find("Grids").transform;
         cells = new GameObject[9, 10];

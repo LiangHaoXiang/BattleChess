@@ -153,6 +153,7 @@ public class CreateManager : MonoBehaviour
         GameObject go = Instantiate(prefab);
         PoolManager.Push(go);   //放入池工作区进行管理
         go.transform.position = Scene3_UI.cells[x, y].transform.position;
+        go.transform.localScale = Vector3.one;
         return go.transform;
     }
 
