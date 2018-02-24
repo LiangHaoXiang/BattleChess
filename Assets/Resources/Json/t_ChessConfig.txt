@@ -1,0 +1,11 @@
+{
+    "Attributes": [
+        {"name": "Boss",	"hp": 1,	"attack": 1000,	"defence": 0},
+	{"name": "Ju",		"hp": 200,	"attack": 50,	"defence": 40},
+	{"name": "Ma",		"hp": 180,	"attack": 40,	"defence": 25},
+	{"name": "Pao",		"hp": 180,	"attack": 45,	"defence": 20},
+	{"name": "Shi",		"hp": 100,	"attack": 30,	"defence": 10},
+	{"name": "Xiang",	"hp": 100,	"attack": 30,	"defence": 10},
+	{"name": "Zu",		"hp": 100,	"attack": 20,	"defence": 20}
+    ]
+}

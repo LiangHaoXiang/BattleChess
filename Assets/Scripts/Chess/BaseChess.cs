@@ -25,6 +25,8 @@ public abstract class BaseChess : MonoBehaviour
 
         PointCell.PointCellClickEvent += Move;
         MoveEvent += Move;
+
+        gameObject.AddComponent<AttrBox>();
     }
 
     public virtual void Update()
