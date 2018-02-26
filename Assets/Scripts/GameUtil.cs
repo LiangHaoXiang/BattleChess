@@ -60,4 +60,14 @@ public class GameUtil
         return (int)(hp * 0.4 + attack * 10 + defence * 10);
     }
 
+    /// <summary>
+    /// 两棋子战斗比较，返回胜者
+    /// </summary>
+    /// <param name="attacker">进攻方</param>
+    /// <param name="defender">防守方</param>
+    /// <returns></returns>
+    public static GameObject Battle(BaseChess attacker, BaseChess defender)
+    {
+        return new GameObject();
+    }
 }
