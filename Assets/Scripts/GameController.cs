@@ -36,6 +36,7 @@ public class GameController : MonoBehaviour
             if (scene.name.Equals("scene3(Main)"))  //若主场景加载完毕并切换到主场景
             {
                 Debug.Log("主场景已加载完毕并切换到主场景");
+                ChessConfig.ReadJson();                 //读取棋子属性配置Json表
             }
         }
     }

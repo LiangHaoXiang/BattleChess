@@ -47,4 +47,17 @@ public class GameUtil
         else
             return false;
     }
+
+    /// <summary>
+    /// 计算战力
+    /// </summary>
+    /// <param name="hp"></param>
+    /// <param name="attack"></param>
+    /// <param name="defence"></param>
+    /// <returns></returns>
+    public static int CalCombat(int hp, int attack, int defence)
+    {
+        return (int)(hp * 0.4 + attack * 10 + defence * 10);
+    }
+
 }

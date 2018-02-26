@@ -8,6 +8,7 @@ public class Chess_Ju : BaseChess
 {
     public override void Awake()
     {
+        chessName = "Ju";
         base.Awake();
     }
 

@@ -14,6 +14,9 @@ public abstract class BaseChess : MonoBehaviour
     protected ChessReciprocalState chessReciprocalState;    //棋子交互状态
     protected ChessSituationState chessSituationState;      //棋子形势状态
 
+    public string chessName;
+    public AttrBox attrBox;
+
     public virtual void Awake()
     {
         //createManager = GameObject.Find("CreateManager").GetComponent<CreateManager>();
@@ -27,6 +30,12 @@ public abstract class BaseChess : MonoBehaviour
         MoveEvent += Move;
 
         gameObject.AddComponent<AttrBox>();
+        attrBox = gameObject.GetComponent<AttrBox>();
+        attrBox.SetAttrList(ChessConfig.GetAttrList(chessName));
+
+        //Debug.Log(attrBox.Hp);
+        //Debug.Log(attrBox.Attack);
+        //Debug.Log(attrBox.Defence);
     }
 
     public virtual void Update()
