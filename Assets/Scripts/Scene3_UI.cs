@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -90,7 +91,18 @@ public class Scene3_UI : MonoBehaviour
         createManager = CreateManager.Instance;
         createManager.InitChessBoard();
         GameController.Instance.UpdateGameData();
-
+        foreach(GameObject chess in PoolManager.work_List)
+        {
+            Component[] components = chess.GetComponents<Component>();
+            Type type = components[2].GetType();    //组件第3个都是继承同一父类BaseChess的脚本
+            Type baseType = type.BaseType;          //其实这样也可以的，这个是参考反射的
+            
+            BaseChess bc = chess.GetComponent(type) as BaseChess;   //关键是这一句
+            Debug.Log(bc.chessName);
+            Debug.Log(bc.attrBox.Hp);
+            Debug.Log(bc.attrBox.Attack);
+            Debug.Log(bc.attrBox.Defence);
+        }
         beginBtn.SetActive(false);
     }
 }

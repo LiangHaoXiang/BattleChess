@@ -5,10 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    private static GameController instance = null;
     public static bool hadLoad = false;
-
+    private static GameController instance = null;
     public static GameController Instance { get { return instance; } }
+
+    public static ResetReciprocalStateEventHandler ResetReciprocalStateEvent;
 
     void Awake()
     {
@@ -56,5 +57,6 @@ public class GameController : MonoBehaviour
     {
         GameCache.UpdateChessData();
         GameCache.SetMaps();
+        ResetReciprocalStateEvent();
     }
 }

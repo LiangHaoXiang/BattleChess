@@ -14,11 +14,16 @@ public abstract class BaseChess : MonoBehaviour
     protected ChessReciprocalState chessReciprocalState;    //棋子交互状态
     protected ChessSituationState chessSituationState;      //棋子形势状态
 
+    public static int count = 0;
+
+    public int chessId;             //棋子唯一ID
     public string chessName;
     public AttrBox attrBox;
 
     public virtual void Awake()
     {
+        count++;
+        chessId = count;
         //createManager = GameObject.Find("CreateManager").GetComponent<CreateManager>();
         chessReciprocalState = ChessReciprocalState.unChoosed;
         chessSituationState = ChessSituationState.Idle;
@@ -66,7 +71,9 @@ public abstract class BaseChess : MonoBehaviour
                         
                         chessReciprocalState = ChessReciprocalState.moving;//这里在移动的时候时间是0.1秒，这个时间段的状态改成moving状态，还需要改进，否则会有bug
                         iTween.MoveTo(gameObject, iTween.Hash("time", 0.1f, "position", target,
-                                                            "easetype", iTween.EaseType.linear));
+                            "easetype", iTween.EaseType.linear, 
+                            "oncomplete", "UpdateGameData", 
+                            "oncompletetarget", GameObject.Find("GameController")));
                         break;
                     }
                     else if (chessReciprocalState != ChessReciprocalState.moving)
@@ -129,7 +136,7 @@ public abstract class BaseChess : MonoBehaviour
         if (chess == gameObject)
         {
             //TODO...战斗，比较属性。
-            //Battle()  
+            //GameUtil.Battle()  
             Killed();
         }
     }
@@ -286,7 +293,7 @@ public abstract class BaseChess : MonoBehaviour
             ChooseEvent += new ChooseEventHandler(CancelChoose);//订阅取消选择事件
             TipsKillEvent += TipsBeTarget;
             EatEvent += new EatEventHandler(Eat);               //订阅吃事件
-            //GameController.ResetChessReciprocalStateEvent += CancelChoose; //订阅重置棋子状态事件
+            GameController.ResetReciprocalStateEvent += CancelChoose; //订阅重置棋子状态事件
             //Chess_Boss.DetectBeAttackedEvent += DetectJiangJun;            //订阅检测将军事件
         }
     }
@@ -301,7 +308,7 @@ public abstract class BaseChess : MonoBehaviour
             EatEvent -= Eat;
             TipsKillEvent -= TipsBeTarget;
             ChooseEvent -= CancelChoose;
-            //GameController.ResetChessReciprocalStateEvent -= CancelChoose;
+            GameController.ResetReciprocalStateEvent -= CancelChoose;
             //Chess_Boss.DetectBeAttackedEvent -= DetectJiangJun;
         }
     }

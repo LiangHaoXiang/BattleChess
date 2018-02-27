@@ -52,7 +52,6 @@ public class ChessConfig
             cfg = ReadJson();
             foreach(ChessCfg cc in cfg)
             {
-                Debug.Log(cc.name);
                 List<int> attrList = new List<int>();
                 attrList.Add(cc.hp);                //attrList索引为0
                 attrList.Add(cc.attack);            //attrList索引为1

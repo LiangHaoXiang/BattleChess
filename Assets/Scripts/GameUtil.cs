@@ -61,13 +61,69 @@ public class GameUtil
     }
 
     /// <summary>
-    /// 两棋子战斗比较，返回胜者
+    /// 两棋子战斗比较，返回胜者，且胜者血量相应损失
     /// </summary>
     /// <param name="attacker">进攻方</param>
     /// <param name="defender">防守方</param>
     /// <returns></returns>
-    public static GameObject Battle(BaseChess attacker, BaseChess defender)
+    public static GameObject Battle(GameObject attacker, GameObject defender)
     {
-        return new GameObject();
+        AttrBox a = GetChessAttrList(attacker);
+        AttrBox b = GetChessAttrList(defender);
+        int a_times = b.Hp / (a.Attack - b.Defence);      //a打死b所需回合数
+        int b_times = a.Hp / (b.Attack - a.Defence);      //b打死a所需回合数
+        if (a_times <= b_times)
+        {
+            a.Hp -= (b.Attack - a.Defence) * (a_times - 1);
+            return attacker;
+        }
+        else
+        {
+            b.Hp -= (a.Attack - b.Defence) * b_times;
+            return defender;
+        }
+    }
+
+    /// <summary>
+    /// 根据棋子物体获取棋子对象实例
+    /// </summary>
+    /// <param name="chess">棋子物体</param>
+    /// <returns></returns>
+    public static BaseChess GetChessInstance(GameObject chess)
+    {
+        Component[] components = chess.GetComponents<Component>();
+        Type type = components[2].GetType();    //默认第3个组件都是继承同一父类BaseChess的脚本
+        BaseChess bc = chess.GetComponent(type) as BaseChess;   //关键是这一句
+        return bc;
+    }
+
+    /// <summary>
+    /// 获取棋子Id
+    /// </summary>
+    /// <param name="chess"></param>
+    /// <returns></returns>
+    public static int GetChessId(GameObject chess)
+    {
+        return GetChessInstance(chess).chessId;
+    }
+
+    public static AttrBox GetChessAttrList(GameObject chess)
+    {
+        return GetChessInstance(chess).attrBox;
+    }
+
+    public static string GetChessName(GameObject chess)
+    {
+        return GetChessInstance(chess).chessName;
+    }
+
+    public static int GetChessCombat(GameObject chess)
+    {
+        return GetChessInstance(chess).attrBox.Combat;
+    }
+
+    public static int GetChessCombat(AttrBox chessAttrBox)
+    {
+        return chessAttrBox.Combat;
     }
 }

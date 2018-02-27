@@ -69,6 +69,10 @@ public delegate void EatEventHandler(GameObject chess);
 /// </summary>
 /// <param name="point">传入目标位置</param>
 public delegate void MoveEventHandler(Vector2 point);
+/// <summary>
+/// 重置棋子交互状态
+/// </summary>
+public delegate void ResetReciprocalStateEventHandler();
 
 public class GameDefine{
 
