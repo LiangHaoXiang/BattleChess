@@ -61,7 +61,7 @@ public class GameUtil
     }
 
     /// <summary>
-    /// 两棋子战斗比较，返回胜者，且胜者血量相应损失
+    /// 两棋子战斗比较，返回阵亡者，且胜者血量相应损失
     /// </summary>
     /// <param name="attacker">进攻方</param>
     /// <param name="defender">防守方</param>
@@ -75,12 +75,12 @@ public class GameUtil
         if (a_times <= b_times)
         {
             a.Hp -= (b.Attack - a.Defence) * (a_times - 1);
-            return attacker;
+            return defender;
         }
         else
         {
             b.Hp -= (a.Attack - b.Defence) * b_times;
-            return defender;
+            return attacker;
         }
     }
 
@@ -126,4 +126,9 @@ public class GameUtil
     {
         return chessAttrBox.Combat;
     }
+
+    //public static GameObject GetAttacker()
+    //{
+
+    //}
 }

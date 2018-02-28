@@ -140,6 +140,8 @@ public class CreateManager : MonoBehaviour
 
         r_Ju2 = Create(red_Ju, 8, 0); //r_Bing5 = Create(red_Bing, 8, 3);
 
+        BaseChess.SetAttackerEvent += GameController.SetAttacker;
+        BaseChess.SetDefenderEvent += GameController.SetDefender;
     }
 
     /// <summary>

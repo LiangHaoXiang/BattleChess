@@ -7,7 +7,8 @@ public abstract class BaseChess : MonoBehaviour
 {
     public static event ChooseEventHandler ChooseEvent;//选择本棋子事件，通知其他棋子为取消选择状态
     public static event TipsKillEventHandler TipsKillEvent;
-    public static event EatEventHandler EatEvent;
+    public static event SetAttackerEventHandler SetAttackerEvent;
+    public static event SetDefenderEventHandler SetDefenderEvent;
     public static event MoveEventHandler MoveEvent;
 
     //protected CreateManager createManager;
@@ -30,9 +31,6 @@ public abstract class BaseChess : MonoBehaviour
         PoolManager.PushEvent += SubscribeEvents;//棋子被创建时就该订阅这一堆事件
         PoolManager.TakeEvent += SubscribeEvents;
         PoolManager.RestoreEvent += CancelSubscribeEvents;
-
-        PointCell.PointCellClickEvent += Move;
-        MoveEvent += Move;
 
         gameObject.AddComponent<AttrBox>();
         attrBox = gameObject.GetComponent<AttrBox>();
@@ -65,6 +63,10 @@ public abstract class BaseChess : MonoBehaviour
                 {
                     if(GameUtil.CompareVector2(point, canMovePoints[i]) == true)
                     {
+                        if(GameController.IsBattle == true)
+                        {
+                            SetAttackerEvent(gameObject);//派发事件设置攻击者
+                        }
                         int x = (int)point.x;
                         int y = (int)point.y;
                         Vector3 target = Scene3_UI.cells[x, y].transform.position;
@@ -131,15 +133,15 @@ public abstract class BaseChess : MonoBehaviour
     /// <summary>
     /// 吃
     /// </summary>
-    public void Eat(GameObject chess)
-    {
-        if (chess == gameObject)
-        {
-            //TODO...战斗，比较属性。
-            //GameUtil.Battle()  
-            Killed();
-        }
-    }
+    //public void Eat(GameObject chess)
+    //{
+    //    if (chess == gameObject)
+    //    {
+    //        //TODO...战斗，比较属性。
+    //        //GameUtil.Battle()  
+    //        Killed();
+    //    }
+    //}
     /// <summary>
     /// 根据棋局信息，该棋子能移动的所有位置,返回的是平面二维坐标，如(0,0)、(3,5)、(6,6)等
     /// </summary>
@@ -150,12 +152,12 @@ public abstract class BaseChess : MonoBehaviour
     /// <summary>
     /// 被杀
     /// </summary>
-    public void Killed()
+    public void Killed(GameObject chess)
     {
-        //播放音效
-
-        //被杀 回收
-        PoolManager.Restore(gameObject);
+        if (chess == gameObject)
+        {
+            PoolManager.Restore(gameObject);//被杀 回收
+        }
     }
     /// <summary>
     /// 判断是否会将军
@@ -200,10 +202,11 @@ public abstract class BaseChess : MonoBehaviour
         //if ((GameController.whoWalk == 着法状态.到红方走 && GetComponent<ChessCamp>().camp == Camp.Red) ||
         //    (GameController.whoWalk == 着法状态.到黑方走 && GetComponent<ChessCamp>().camp == Camp.Black))
         //{
-        if(chessSituationState == ChessSituationState.BeTaget) //若被标记为红点，就是要吃你
-        {
-            MoveEvent(GameCache.Chess2Vector[gameObject]);
-            EatEvent(gameObject);            
+        if(chessSituationState == ChessSituationState.BeTaget) 
+        {//若被选中且被标记为红点，就是有人要吃你，把自身物体派发出去
+            GameController.IsBattle = true;
+            SetDefenderEvent(gameObject);   //将自身防守方派发出去
+            MoveEvent(GameCache.Chess2Vector[gameObject]);         
         }
         else if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
         {
@@ -290,9 +293,11 @@ public abstract class BaseChess : MonoBehaviour
     {
         if (chess == gameObject)
         {
-            ChooseEvent += new ChooseEventHandler(CancelChoose);//订阅取消选择事件
+            ChooseEvent += new ChooseEventHandler(CancelChoose);//订阅 取消选择事件
             TipsKillEvent += TipsBeTarget;
-            EatEvent += new EatEventHandler(Eat);               //订阅吃事件
+            MoveEvent += Move;
+            GameController.KilledEvent += Killed;
+            PointCell.PointCellClickEvent += Move;
             GameController.ResetReciprocalStateEvent += CancelChoose; //订阅重置棋子状态事件
             //Chess_Boss.DetectBeAttackedEvent += DetectJiangJun;            //订阅检测将军事件
         }
@@ -305,7 +310,9 @@ public abstract class BaseChess : MonoBehaviour
     {
         if (chess == gameObject)
         {
-            EatEvent -= Eat;
+            PointCell.PointCellClickEvent -= Move;
+            MoveEvent -= Move;
+            GameController.KilledEvent -= Killed;
             TipsKillEvent -= TipsBeTarget;
             ChooseEvent -= CancelChoose;
             GameController.ResetReciprocalStateEvent -= CancelChoose;

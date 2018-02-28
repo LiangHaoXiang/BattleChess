@@ -60,15 +60,25 @@ public delegate void ChooseEventHandler();
 /// <param name="point">传入可吃子的位置信息</param>
 public delegate void TipsKillEventHandler(Vector2 point);
 /// <summary>
-/// 吃事件，
+/// 设置攻击方事件，
 /// </summary>
-/// <param name="chess">一般传自身棋子，来过滤掉其他棋子的处理</param>
-public delegate void EatEventHandler(GameObject chess);
+/// <param name="chess">传自身棋子即进攻方</param>
+public delegate void SetAttackerEventHandler(GameObject chess);
+/// <summary>
+/// 设置防守方事件，
+/// </summary>
+/// <param name="chess">传自身棋子即被进攻方</param>
+public delegate void SetDefenderEventHandler(GameObject chess);
 /// <summary>
 /// 移动，选中状态的棋子才会动，其他会过滤掉
 /// </summary>
 /// <param name="point">传入目标位置</param>
 public delegate void MoveEventHandler(Vector2 point);
+/// <summary>
+/// 阵亡者事件
+/// </summary>
+/// <param name="chess">阵亡者物体</param>
+public delegate void KilledEventHandler(GameObject chess);
 /// <summary>
 /// 重置棋子交互状态
 /// </summary>

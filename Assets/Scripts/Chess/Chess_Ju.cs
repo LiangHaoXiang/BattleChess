@@ -14,7 +14,7 @@ public class Chess_Ju : BaseChess
 
     void Start()
     {
-        
+
     }
 
     public override void Update()
