@@ -93,6 +93,7 @@ public class GameUtil
     {
         Component[] components = chess.GetComponents<Component>();
         Type type = components[2].GetType();    //默认第3个组件都是继承同一父类BaseChess的脚本
+        //Type baseType = type.BaseType;          //其实这样也可以的，这个是参考反射的
         BaseChess bc = chess.GetComponent(type) as BaseChess;   //关键是这一句
         return bc;
     }

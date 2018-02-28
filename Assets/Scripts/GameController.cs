@@ -11,9 +11,10 @@ public class GameController : MonoBehaviour
 
     public static ResetReciprocalStateEventHandler ResetReciprocalStateEvent;
     public static event KilledEventHandler KilledEvent;
-    public static bool IsBattle = false;        //是否发生战斗
+    public static bool IsBattle = false;                //是否发生战斗
     private static GameObject attacker;                 //攻击方
     private static GameObject defender;                 //被攻击方
+    public static Playing playing;
 
     void Awake()
     {
@@ -35,6 +36,8 @@ public class GameController : MonoBehaviour
     {
         if (scene.isLoaded)
         {
+            IsBattle = false;
+            playing = Playing.None;
             GameCache.ClearMaps();
             GameCache.ClearChessVectorDic();
 
@@ -76,7 +79,6 @@ public class GameController : MonoBehaviour
     {
         if (IsBattle == true)
         {
-            Debug.Log("发生战斗");
             //战斗结束后再更新数据
             IsBattle = false;
             GameObject loser = GameUtil.Battle(attacker, defender);

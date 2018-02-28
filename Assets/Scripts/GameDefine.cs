@@ -14,10 +14,11 @@ public enum GameStatus
 }
 
 /// <summary>
-/// 游戏进行时的各个状态
+/// 游戏时的各个状态
 /// </summary>
-public enum GameGoing
+public enum Playing
 {
+    None,
     OnRed,                  //到红方走
     OnBlack,                //到黑方走
     RedAdding,              //到红方加属性

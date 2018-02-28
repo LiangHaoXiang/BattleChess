@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Scene3_UI : MonoBehaviour
 {
     #region 左
+    private GameObject leftGameMode;
+    private GameObject leftReplayMode;
     private Text blackAllTime;
     private Text blackStepTime;
     private Text redAllTime;
@@ -18,12 +20,16 @@ public class Scene3_UI : MonoBehaviour
     private GameObject beginBtn;
     #endregion
     #region 右
+    private GameObject rightGameMode;
+    private GameObject rightReplayMode;
     private GameObject blackDetailPanel;
     private GameObject redDetailPanel;
     #endregion
 
     void Awake()
     {
+        leftGameMode = GameObject.Find("Canvas/Left/GameMode");
+        leftReplayMode = GameObject.Find("Canvas/Left/ReplayMode");
         blackAllTime = GameObject.Find("Canvas/Left/GameMode/Black/AllTime/Value").GetComponent<Text>();
         blackStepTime = GameObject.Find("Canvas/Left/GameMode/Black/StepTime/Value").GetComponent<Text>();
         redAllTime = GameObject.Find("Canvas/Left/GameMode/Red/AllTime/Value").GetComponent<Text>();
@@ -43,6 +49,8 @@ public class Scene3_UI : MonoBehaviour
         GameCache.SetCoords(cells);     //将场景找到的cell作为参数，处理写入映射缓存
 
         beginBtn = GameObject.Find("Canvas/Middle/BeginBtn");
+        rightGameMode = GameObject.Find("Canvas/Right/GameMode");
+        rightReplayMode = GameObject.Find("Canvas/Right/ReplayMode");
         blackDetailPanel = GameObject.Find("Canvas/Right/BlackAttrDetail");
         redDetailPanel = GameObject.Find("Canvas/Right/RedAttrDetail");
     }
@@ -59,28 +67,18 @@ public class Scene3_UI : MonoBehaviour
         redStepTime.text = "00:00";
         blackDetailPanel.SetActive(false);
         redDetailPanel.SetActive(false);
+        SetMode(true);
+    }
 
-        //redJu = GameObject.Find("红車");
-        //chessList = new List<GameObject>();
-        //chessList.Add(redJu);
-        //chessList.Add(GameObject.Find("红車 (2)"));
-        //chessList.Add(GameObject.Find("黑車"));
-        //GameCache.SetChessVectorDic(chessList);
-
-
-        //Debug.Log("先打印");
-        //Debug.Log(PoolManager.work_List[0].transform.position);
-        //foreach (KeyValuePair<Vector3, Vector2> kvp in GameCache.Coords)
-        //{
-        //    Debug.Log("coords的键值对：" + kvp.Key + "   " + kvp.Value);
-        //    if (GameUtil.CompareVector3(kvp.Key, PoolManager.work_List[0].transform.position))
-        //    {
-        //        Debug.Log("找到相等的三维坐标， ");
-        //        Debug.Log(kvp.Value);
-        //    }
-        //}
-
-
+    /// <summary>
+    /// 设置模式，游戏模式还是复盘模式
+    /// </summary>
+    public void SetMode(bool isGameMode)
+    {
+        leftGameMode.SetActive(isGameMode);
+        rightGameMode.SetActive(isGameMode);
+        leftReplayMode.SetActive(!isGameMode);
+        rightReplayMode.SetActive(!isGameMode);
     }
 
     /// <summary>
@@ -91,18 +89,18 @@ public class Scene3_UI : MonoBehaviour
         createManager = CreateManager.Instance;
         createManager.InitChessBoard();
         GameController.Instance.UpdateGameData();
-        foreach(GameObject chess in PoolManager.work_List)
-        {
-            Component[] components = chess.GetComponents<Component>();
-            Type type = components[2].GetType();    //组件第3个都是继承同一父类BaseChess的脚本
-            Type baseType = type.BaseType;          //其实这样也可以的，这个是参考反射的
-            
-            BaseChess bc = chess.GetComponent(type) as BaseChess;   //关键是这一句
-            Debug.Log(bc.chessName);
-            Debug.Log(bc.attrBox.Hp);
-            Debug.Log(bc.attrBox.Attack);
-            Debug.Log(bc.attrBox.Defence);
-        }
+
         beginBtn.SetActive(false);
     }
 }
+        //foreach(GameObject chess in PoolManager.work_List)
+        //{
+        //    Component[] components = chess.GetComponents<Component>();
+        //    Type type = components[2].GetType();    //组件第3个都是继承同一父类BaseChess的脚本
+            
+        //    BaseChess bc = chess.GetComponent(type) as BaseChess;   //关键是这一句
+        //    Debug.Log(bc.chessName);
+        //    Debug.Log(bc.attrBox.Hp);
+        //    Debug.Log(bc.attrBox.Attack);
+        //    Debug.Log(bc.attrBox.Defence);
+        //}
