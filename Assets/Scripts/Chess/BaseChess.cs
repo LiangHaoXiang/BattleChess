@@ -199,50 +199,101 @@ public abstract class BaseChess : MonoBehaviour
     /// </summary>
     public void ChesseClicked()
     {
-        //if ((GameController.whoWalk == 着法状态.到红方走 && GetComponent<ChessCamp>().camp == Camp.Red) ||
-        //    (GameController.whoWalk == 着法状态.到黑方走 && GetComponent<ChessCamp>().camp == Camp.Black))
-        //{
-        if(chessSituationState == ChessSituationState.BeTaget) 
-        {//若被选中且被标记为红点，就是有人要吃你，把自身物体派发出去
-            GameController.IsBattle = true;
-            SetDefenderEvent(gameObject);   //将自身防守方派发出去
-            MoveEvent(GameCache.Chess2Vector[gameObject]);         
-        }
-        else if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
+        if (GameController.playing == Playing.OnRed)
         {
-            ChooseEvent();
-            BeChoosed();
+            if (gameObject.tag == "Red")
+            {
+                if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
+                {
+                    ChooseEvent();
+                    BeChoosed(false);
+                }
+                else
+                    CancelChoose();
+            }
+            else
+            {
+                if (chessSituationState == ChessSituationState.BeTaget)
+                {//若被选中且被标记为红点，就是有人要吃你，把自身物体派发出去
+                    GameController.IsBattle = true;
+                    SetDefenderEvent(gameObject);   //将自身防守方派发出去
+                    MoveEvent(GameCache.Chess2Vector[gameObject]);
+                }
+                else return;
+            }
         }
-        else
+        else if (GameController.playing == Playing.OnBlack)
         {
-            CancelChoose();
+            if (gameObject.tag == "Black")
+            {
+                if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
+                {
+                    ChooseEvent();
+                    BeChoosed(false);
+                }
+                else
+                    CancelChoose();
+            }
+            else
+            {
+                if (chessSituationState == ChessSituationState.BeTaget)
+                {//若被选中且被标记为红点，就是有人要吃你，把自身物体派发出去
+                    GameController.IsBattle = true;
+                    SetDefenderEvent(gameObject);   //将自身防守方派发出去
+                    MoveEvent(GameCache.Chess2Vector[gameObject]);
+                }
+                else return;
+            }
         }
-        //}
+        else if (GameController.playing == Playing.RedAdding)
+        {
+            if (gameObject.tag == "Red")
+            {
+                ChooseEvent();      //这里调用是为了以防万一
+                BeChoosed(true);
+            }
+            else return;
+        }
+        else if (GameController.playing == Playing.BlackAdding)
+        {
+            if (gameObject.tag == "Black")
+            {
+                ChooseEvent();      //这里调用是为了以防万一
+                BeChoosed(true);
+            }
+            else return;
+        }
     }
     /// <summary>
     /// 被选中
     /// </summary>
-    public void BeChoosed()
+    /// <param name="isAdding">是否在加属性</param>
+    public void BeChoosed(bool isAdding)
     {
-        //有白边圈住
-        transform.FindChild("baibian").gameObject.SetActive(true);
-
-        //可以提示出该棋子能移动的所有位置
-        Vector2[] canMovePoints = CanMovePoints(GameCache.Chess2Vector, GameCache.Vector2Chess).ToArray();
-        for (int i = 0; i < canMovePoints.Length; i++)
+        transform.FindChild("baibian").gameObject.SetActive(true);  //有白边圈住
+        if (isAdding)
         {
-            int x = (int)canMovePoints[i].x;
-            int y = (int)canMovePoints[i].y;
 
-            Scene3_UI.cells[x, y].GetComponent<Image>().enabled = true;
-            //若可移动点上存在其他棋子，那肯定就是敌方棋子了，提示可以击杀之
-            if (GameCache.Vector2Chess.ContainsKey(canMovePoints[i]))
-            {
-                GameCache.Vector2Chess[canMovePoints[i]].transform.FindChild("redpoint").gameObject.SetActive(true);
-                TipsKillEvent(canMovePoints[i]);
-            }
         }
-        chessReciprocalState = ChessReciprocalState.beChoosed;
+        else
+        {
+            //可以提示出该棋子能移动的所有位置
+            Vector2[] canMovePoints = CanMovePoints(GameCache.Chess2Vector, GameCache.Vector2Chess).ToArray();
+            for (int i = 0; i < canMovePoints.Length; i++)
+            {
+                int x = (int)canMovePoints[i].x;
+                int y = (int)canMovePoints[i].y;
+
+                Scene3_UI.cells[x, y].GetComponent<Image>().enabled = true;
+                //若可移动点上存在其他棋子，那肯定就是敌方棋子了，提示可以击杀之
+                if (GameCache.Vector2Chess.ContainsKey(canMovePoints[i]))
+                {
+                    GameCache.Vector2Chess[canMovePoints[i]].transform.FindChild("redpoint").gameObject.SetActive(true);
+                    TipsKillEvent(canMovePoints[i]);
+                }
+            }
+            chessReciprocalState = ChessReciprocalState.beChoosed;
+        }
     }
 
     /// <summary>
@@ -278,10 +329,6 @@ public abstract class BaseChess : MonoBehaviour
     protected void Reset()
     {
         transform.FindChild("baibian").gameObject.SetActive(false);
-        foreach(GameObject cell in Scene3_UI.cells)
-        {
-            cell.GetComponent<Image>().enabled = false;
-        }
         ResetChessReciprocalState();
         ResetChessSituationState();
     }

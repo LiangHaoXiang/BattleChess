@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,8 +21,8 @@ public enum Playing
 {
     None,
     OnRed,                  //到红方走
-    OnBlack,                //到黑方走
     RedAdding,              //到红方加属性
+    OnBlack,                //到黑方走
     BlackAdding,            //到黑方加属性
 }
 
@@ -88,3 +89,86 @@ public delegate void ResetReciprocalStateEventHandler();
 public class GameDefine{
 
 }
+
+/*****************************下面是C#底层源码*****************************
+
+public static Delegate RemoveAll(Delegate source, Delegate value)
+{
+    Delegate newDelegate = null;
+    do
+    {
+        newDelegate = source;
+        source = Remove(source, value);
+    }
+    while (newDelegate != source);
+    return newDelegate;
+}
+
+public static Delegate Remove(Delegate source, Delegate value)
+{
+    if (source == null) return null;
+    if (value == null) return source;
+    if (!InternalEqualTypes(source, value))
+        throw new ArgumentException(Environment.GetResourceString("Arg_DlgtTypeMis"));
+    return source.RemoveImpl(value);
+}
+
+protected override sealed Delegate RemoveImpl(Delegate value)
+{
+    MulticastDelegate v = value as MulticastDelegate;
+    if (v == null) return this;
+    if (v._invocationList as Object[] == null)
+    {
+        Object[] invocationList = _invocationList as Object[];
+        if (invocationList == null)
+        {
+            if (this.Equals(value))
+                return null;
+        } else
+        {
+            int invocationCount = (int)_invocationCount;
+            for (int i = invocationCount; --i >= 0;)
+            {
+                if (value.Equals(invocationList[i]))
+                {
+                    if (invocationCount == 2)
+                    {
+                        return (Delegate)invocationList[1 - i];
+                    }
+                    else
+                    {
+                        Object[] list = DeleteFromInvocationList(invocationList, invocationCount, i, 1);
+                        return NewMulticastDelegate(list, invocationCount - 1, true);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        Object[] invocationList = _invocationList as Object[];
+        if (invocationList != null)
+        {
+            int invocationCount = (int)_invocationCount;
+            int vInvocationCount = (int)v._invocationCount;
+            for (int i = invocationCount - vInvocationCount; i >= 0; i--)
+            {
+                if (EqualInvocationLists(invocationList, v._invocationList as Object[], i, vInvocationCount))
+                {
+                    if (invocationCount - vInvocationCount == 0)
+                    { return null; }
+                    else if (invocationCount - vInvocationCount == 1)
+                    { return (Delegate)invocationList[i != 0 ? 0 : invocationCount - 1]; }
+                    else
+                    {
+                        Object[] list = DeleteFromInvocationList(invocationList, invocationCount, i, vInvocationCount);
+                        return NewMulticastDelegate(list, invocationCount - vInvocationCount, true);
+                    }
+                }
+            }
+        }
+    }
+    return this;
+}
+
+*******************************************************************************/

@@ -86,11 +86,22 @@ public class Scene3_UI : MonoBehaviour
     /// </summary>
     public void OnBeginClick()
     {
+        GameController.gameStatus = GameStatus.Going;
         createManager = CreateManager.Instance;
         createManager.InitChessBoard();
         GameController.Instance.UpdateGameData();
 
         beginBtn.SetActive(false);
+    }
+    /// <summary>
+    /// 重置棋盘所有点状态
+    /// </summary>
+    public static void ResetChessBoardPoints()
+    {
+        foreach (GameObject cell in cells)
+        {
+            cell.GetComponent<Image>().enabled = false;
+        }
     }
 }
         //foreach(GameObject chess in PoolManager.work_List)

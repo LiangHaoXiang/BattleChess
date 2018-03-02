@@ -14,7 +14,8 @@ public class GameController : MonoBehaviour
     public static bool IsBattle = false;                //是否发生战斗
     private static GameObject attacker;                 //攻击方
     private static GameObject defender;                 //被攻击方
-    public static Playing playing;
+    public static GameStatus gameStatus;                //游戏状态
+    public static Playing playing;                      //游戏时状态
 
     void Awake()
     {
@@ -37,6 +38,7 @@ public class GameController : MonoBehaviour
         if (scene.isLoaded)
         {
             IsBattle = false;
+            gameStatus = GameStatus.NotBegin;
             playing = Playing.None;
             GameCache.ClearMaps();
             GameCache.ClearChessVectorDic();
@@ -47,6 +49,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
+                System.Delegate.RemoveAll(ResetReciprocalStateEvent, ResetReciprocalStateEvent);
                 BaseChess.SetAttackerEvent -= SetAttacker;
                 BaseChess.SetDefenderEvent -= SetDefender;
             }
@@ -83,15 +86,40 @@ public class GameController : MonoBehaviour
             IsBattle = false;
             GameObject loser = GameUtil.Battle(attacker, defender);
             KilledEvent(loser);
-            GameCache.UpdateChessData();
-            GameCache.SetMaps();
-            ResetReciprocalStateEvent();
         }
-        else    //没战斗，只是单纯移动，那么直接更新数据
+        GameCache.UpdateChessData();
+        GameCache.SetMaps();
+        ResetReciprocalStateEvent();
+        if (gameStatus == GameStatus.Going)
         {
-            GameCache.UpdateChessData();
-            GameCache.SetMaps();
-            ResetReciprocalStateEvent();
+            UpdateBout();
+        }
+    }
+
+    /// <summary>
+    /// 更新回合
+    /// </summary>
+    public void UpdateBout()
+    {
+        if (playing == Playing.None)
+        {
+            playing = Playing.OnRed;
+        }
+        else if (playing == Playing.OnRed)
+        {
+            playing = Playing.RedAdding;
+        }
+        else if (playing == Playing.RedAdding)
+        {
+            playing = Playing.OnBlack;
+        }
+        else if (playing == Playing.OnBlack)
+        {
+            playing = Playing.BlackAdding;
+        }
+        else if (playing == Playing.BlackAdding)
+        {
+            playing = Playing.OnRed;
         }
     }
 }
