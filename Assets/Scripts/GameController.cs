@@ -9,7 +9,6 @@ public class GameController : MonoBehaviour
     private static GameController instance = null;
     public static GameController Instance { get { return instance; } }
 
-    public static ResetReciprocalStateEventHandler ResetReciprocalStateEvent;
     public static event KilledEventHandler KilledEvent;
     public static bool IsBattle = false;                //是否发生战斗
     private static GameObject attacker;                 //攻击方
@@ -46,12 +45,13 @@ public class GameController : MonoBehaviour
             if (scene.name.Equals("scene3(Main)"))  //若主场景加载完毕并切换到主场景
             {
                 Debug.Log("主场景已加载完毕并切换到主场景");
+                Scene3_UI.AddAttrCompleteEvent += UpdateBout;
             }
             else
             {
-                System.Delegate.RemoveAll(ResetReciprocalStateEvent, ResetReciprocalStateEvent);
                 BaseChess.SetAttackerEvent -= SetAttacker;
                 BaseChess.SetDefenderEvent -= SetDefender;
+                Scene3_UI.AddAttrCompleteEvent -= UpdateBout;
             }
         }
     }
@@ -89,7 +89,6 @@ public class GameController : MonoBehaviour
         }
         GameCache.UpdateChessData();
         GameCache.SetMaps();
-        ResetReciprocalStateEvent();
         if (gameStatus == GameStatus.Going)
         {
             UpdateBout();

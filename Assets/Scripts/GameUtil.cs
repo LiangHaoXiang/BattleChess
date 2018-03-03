@@ -61,25 +61,27 @@ public class GameUtil
     }
 
     /// <summary>
-    /// 两棋子战斗比较，返回阵亡者，且胜者血量相应损失
+    /// 双方战斗比较，返回阵亡者，且胜者血量相应损失
     /// </summary>
     /// <param name="attacker">进攻方</param>
     /// <param name="defender">防守方</param>
-    /// <returns></returns>
+    /// <returns>阵亡者</returns>
     public static GameObject Battle(GameObject attacker, GameObject defender)
     {
         AttrBox a = GetChessAttrList(attacker);
         AttrBox b = GetChessAttrList(defender);
+        int a_damage = a.Attack <= b.Defence ? 1 : a.Attack - b.Defence;    //a对b造成的伤害
+        int b_damage = b.Attack <= a.Defence ? 1 : b.Attack - a.Defence;    //b对a造成的伤害
         int a_times = b.Hp / (a.Attack - b.Defence);      //a打死b所需回合数
         int b_times = a.Hp / (b.Attack - a.Defence);      //b打死a所需回合数
         if (a_times <= b_times)
         {
-            a.Hp -= (b.Attack - a.Defence) * (a_times - 1);
+            a.Hp -= b_damage * (a_times - 1);
             return defender;
         }
         else
         {
-            b.Hp -= (a.Attack - b.Defence) * b_times;
+            b.Hp -= a_damage * b_times;
             return attacker;
         }
     }

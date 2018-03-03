@@ -55,7 +55,7 @@ public delegate void RestoreEventHandler(GameObject chess);
 /// <summary>
 /// //选择本棋子事件，通知其他棋子为取消选择状态
 /// </summary>
-public delegate void ChooseEventHandler();
+public delegate void ChooseEventHandler(GameObject chess);
 /// <summary>
 /// 提示可以吃子
 /// </summary>
@@ -77,20 +77,24 @@ public delegate void SetDefenderEventHandler(GameObject chess);
 /// <param name="point">传入目标位置</param>
 public delegate void MoveEventHandler(Vector2 point);
 /// <summary>
+/// 移动完成
+/// </summary>
+public delegate void MoveCompleteHandler();
+/// <summary>
 /// 阵亡者事件
 /// </summary>
 /// <param name="chess">阵亡者物体</param>
 public delegate void KilledEventHandler(GameObject chess);
 /// <summary>
-/// 重置棋子交互状态
+/// 加属性操作完成
 /// </summary>
-public delegate void ResetReciprocalStateEventHandler();
+public delegate void AddAttrCompleteEventHandler();
 
 public class GameDefine{
 
 }
 
-/*****************************下面是C#底层源码*****************************
+/*****************************下面是C#委托的部分底层源码*****************************
 
 public static Delegate RemoveAll(Delegate source, Delegate value)
 {

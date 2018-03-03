@@ -10,6 +10,7 @@ public abstract class BaseChess : MonoBehaviour
     public static event SetAttackerEventHandler SetAttackerEvent;
     public static event SetDefenderEventHandler SetDefenderEvent;
     public static event MoveEventHandler MoveEvent;
+    public static event MoveCompleteHandler MoveCompleteEvent;
 
     //protected CreateManager createManager;
     protected ChessReciprocalState chessReciprocalState;    //棋子交互状态
@@ -35,18 +36,11 @@ public abstract class BaseChess : MonoBehaviour
         gameObject.AddComponent<AttrBox>();
         attrBox = gameObject.GetComponent<AttrBox>();
         attrBox.SetAttrList(ChessConfig.GetAttrList(chessName));
-
-        //Debug.Log(attrBox.Hp);
-        //Debug.Log(attrBox.Attack);
-        //Debug.Log(attrBox.Defence);
     }
 
     public virtual void Update()
     {
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    Move();
-        //}
+
     }
     /// <summary>
     /// 通过鼠标点击来移动
@@ -71,11 +65,12 @@ public abstract class BaseChess : MonoBehaviour
                         int y = (int)point.y;
                         Vector3 target = Scene3_UI.cells[x, y].transform.position;
                         
-                        chessReciprocalState = ChessReciprocalState.moving;//这里在移动的时候时间是0.1秒，这个时间段的状态改成moving状态，还需要改进，否则会有bug
                         iTween.MoveTo(gameObject, iTween.Hash("time", 0.1f, "position", target,
                             "easetype", iTween.EaseType.linear, 
-                            "oncomplete", "UpdateGameData", 
-                            "oncompletetarget", GameObject.Find("GameController")));
+                            "onstart", "OnMoveStart",
+                            "onstarttarget", gameObject,
+                            "oncomplete", "OnMoveComplete", 
+                            "oncompletetarget", gameObject));
                         break;
                     }
                     else if (chessReciprocalState != ChessReciprocalState.moving)
@@ -131,18 +126,6 @@ public abstract class BaseChess : MonoBehaviour
             chessSituationState = ChessSituationState.BeTaget;
     }
     /// <summary>
-    /// 吃
-    /// </summary>
-    //public void Eat(GameObject chess)
-    //{
-    //    if (chess == gameObject)
-    //    {
-    //        //TODO...战斗，比较属性。
-    //        //GameUtil.Battle()  
-    //        Killed();
-    //    }
-    //}
-    /// <summary>
     /// 根据棋局信息，该棋子能移动的所有位置,返回的是平面二维坐标，如(0,0)、(3,5)、(6,6)等
     /// </summary>
     /// <param name="chess2Vector">棋局信息</param>
@@ -194,6 +177,17 @@ public abstract class BaseChess : MonoBehaviour
         return false;
     }
 
+    public void OnMoveStart()
+    {
+        chessReciprocalState = ChessReciprocalState.moving;
+        Scene3_UI.ResetChessBoardPoints();
+    }
+
+    public void OnMoveComplete()
+    {
+        MoveCompleteEvent();
+    }
+
     /// <summary>
     /// 棋子点击事件
     /// </summary>
@@ -205,11 +199,14 @@ public abstract class BaseChess : MonoBehaviour
             {
                 if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
                 {
-                    ChooseEvent();
+                    ChooseEvent(gameObject);
                     BeChoosed(false);
                 }
                 else
+                {
                     CancelChoose();
+                    Scene3_UI.ResetChessBoardPoints();
+                }
             }
             else
             {
@@ -228,11 +225,14 @@ public abstract class BaseChess : MonoBehaviour
             {
                 if (chessReciprocalState == ChessReciprocalState.unChoosed) //若还没被选中
                 {
-                    ChooseEvent();
+                    ChooseEvent(gameObject);
                     BeChoosed(false);
                 }
                 else
+                {
                     CancelChoose();
+                    Scene3_UI.ResetChessBoardPoints();
+                }
             }
             else
             {
@@ -249,7 +249,7 @@ public abstract class BaseChess : MonoBehaviour
         {
             if (gameObject.tag == "Red")
             {
-                ChooseEvent();      //这里调用是为了以防万一
+                ChooseEvent(gameObject);
                 BeChoosed(true);
             }
             else return;
@@ -258,7 +258,7 @@ public abstract class BaseChess : MonoBehaviour
         {
             if (gameObject.tag == "Black")
             {
-                ChooseEvent();      //这里调用是为了以防万一
+                ChooseEvent(gameObject);
                 BeChoosed(true);
             }
             else return;
@@ -271,12 +271,9 @@ public abstract class BaseChess : MonoBehaviour
     public void BeChoosed(bool isAdding)
     {
         transform.FindChild("baibian").gameObject.SetActive(true);  //有白边圈住
-        if (isAdding)
+        if (!isAdding)
         {
-
-        }
-        else
-        {
+            Scene3_UI.ResetChessBoardPoints();
             //可以提示出该棋子能移动的所有位置
             Vector2[] canMovePoints = CanMovePoints(GameCache.Chess2Vector, GameCache.Vector2Chess).ToArray();
             for (int i = 0; i < canMovePoints.Length; i++)
@@ -296,17 +293,17 @@ public abstract class BaseChess : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 取消选中
-    /// </summary>
-    public void CancelChoose()
+    public void CancelChoose(GameObject chess)
     {
-        //将被选中时的所有变化还原
-        Reset();
-        for (int i = 0; i < PoolManager.work_List.Count; i++)
+        if (gameObject != chess)
         {
-            PoolManager.work_List[i].transform.FindChild("redpoint").gameObject.SetActive(false);
+            Reset();    //将被选中时的所有变化还原
         }
+    }
+
+    public void CancelChoose()
+    {    
+        Reset(); //将被选中时的所有变化还原
     }
 
     /// <summary>
@@ -329,6 +326,7 @@ public abstract class BaseChess : MonoBehaviour
     protected void Reset()
     {
         transform.FindChild("baibian").gameObject.SetActive(false);
+        transform.FindChild("redpoint").gameObject.SetActive(false);
         ResetChessReciprocalState();
         ResetChessSituationState();
     }
@@ -345,7 +343,8 @@ public abstract class BaseChess : MonoBehaviour
             MoveEvent += Move;
             GameController.KilledEvent += Killed;
             PointCell.PointCellClickEvent += Move;
-            GameController.ResetReciprocalStateEvent += CancelChoose; //订阅重置棋子状态事件
+            MoveCompleteEvent += CancelChoose; //订阅重置棋子状态事件
+            Scene3_UI.AddAttrCompleteEvent += CancelChoose;
             //Chess_Boss.DetectBeAttackedEvent += DetectJiangJun;            //订阅检测将军事件
         }
     }
@@ -362,7 +361,8 @@ public abstract class BaseChess : MonoBehaviour
             GameController.KilledEvent -= Killed;
             TipsKillEvent -= TipsBeTarget;
             ChooseEvent -= CancelChoose;
-            GameController.ResetReciprocalStateEvent -= CancelChoose;
+            MoveCompleteEvent -= CancelChoose;
+            Scene3_UI.AddAttrCompleteEvent -= CancelChoose;
             //Chess_Boss.DetectBeAttackedEvent -= DetectJiangJun;
         }
     }
