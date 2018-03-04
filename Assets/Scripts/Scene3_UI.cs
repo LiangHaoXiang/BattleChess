@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Scene3_UI : MonoBehaviour
@@ -21,11 +22,13 @@ public class Scene3_UI : MonoBehaviour
     private Transform GridsTrans;
     public static GameObject[,] cells;
     private GameObject beginBtn;
-    private GameObject addAtrrPanel;
+    private GameObject addAtrrPanel;        //加属性面板
     private Text addChessName;
     private Text addHpValue;
     private Text addAttackValue;
     private Text addDefenceValue;
+    private GameObject endPanel;            //结束面板
+    private Text winer;
     #endregion
     #region 右
     private GameObject rightGameMode;
@@ -78,6 +81,8 @@ public class Scene3_UI : MonoBehaviour
         addHpValue = GameObject.Find("Canvas/Middle/AddAttrPanel/Grid/Hp/Value").GetComponent<Text>();
         addAttackValue = GameObject.Find("Canvas/Middle/AddAttrPanel/Grid/Attack/Value").GetComponent<Text>();
         addDefenceValue = GameObject.Find("Canvas/Middle/AddAttrPanel/Grid/Defence/Value").GetComponent<Text>();
+        endPanel = GameObject.Find("Canvas/Middle/EndPanel");
+        winer = GameObject.Find("Canvas/Middle/EndPanel/ResultLabel").GetComponent<Text>();
         /******************右******************/
         blackDetailPanel = GameObject.Find("Canvas/Right/BlackAttrDetail");
         b_Hp = blackDetailPanel.transform.FindChild("Grid/Hp/Value").GetComponent<Text>();
@@ -91,6 +96,7 @@ public class Scene3_UI : MonoBehaviour
         r_Combat = redDetailPanel.transform.FindChild("Combat/Value").GetComponent<Text>();
 
         AddAttrCompleteEvent += HideAddAttrPanel;
+        AddAttrCompleteEvent += HideAttrPanel;
     }
 
     public List<GameObject> chessList;
@@ -110,6 +116,17 @@ public class Scene3_UI : MonoBehaviour
         SetMode(true);
     }
 
+    void Update()
+    {
+        if (GameController.gameStatus == GameStatus.Going)
+        {
+            blackAllTime.text = GameUtil.TimeToStr(TimeManager.GetAllTime("Black"));
+            redAllTime.text = GameUtil.TimeToStr(TimeManager.GetAllTime("Red"));
+            blackStepTime.text = GameUtil.TimeToStr(TimeManager.GetStepTime("Black"));
+            redStepTime.text = GameUtil.TimeToStr(TimeManager.GetStepTime("Red"));
+        }
+    }
+
     /// <summary>
     /// 设置模式，游戏模式还是复盘模式
     /// </summary>
@@ -126,9 +143,8 @@ public class Scene3_UI : MonoBehaviour
     /// </summary>
     public void OnBeginClick()
     {
+        CreateManager.Instance.InitChessBoard();
         GameController.gameStatus = GameStatus.Going;
-        createManager = CreateManager.Instance;
-        createManager.InitChessBoard();
         GameController.Instance.UpdateGameData();
 
         beginBtn.SetActive(false);
@@ -198,6 +214,12 @@ public class Scene3_UI : MonoBehaviour
         addAtrrPanel.SetActive(false);
     }
 
+    public void HideAttrPanel()
+    {
+        redDetailPanel.SetActive(false);
+        blackDetailPanel.SetActive(false);
+    }
+
     /// <summary>
     /// 设置属性面板
     /// </summary>
@@ -205,6 +227,12 @@ public class Scene3_UI : MonoBehaviour
     /// <param name="tag">棋子阵营</param>
     public void SetAttrTexts(AttrBox attrBox, string tag)
     {
+        if (attrBox.Hp == 0)
+        {
+            redDetailPanel.SetActive(false);
+            blackDetailPanel.SetActive(false);
+            return;
+        }
         redDetailPanel.SetActive(tag == "Red");
         blackDetailPanel.SetActive(tag == "Black");
         if (tag == "Red")
@@ -221,5 +249,19 @@ public class Scene3_UI : MonoBehaviour
             b_Defence.text = attrBox.Defence.ToString();
             b_Combat.text = attrBox.Combat.ToString();
         }
+    }
+
+    /// <summary>
+    /// 点击返回事件
+    /// </summary>
+    public void OnBackClick()
+    {
+        SceneManager.LoadScene("scene1");
+    }
+
+    public void OnDestroy()
+    {
+        AddAttrCompleteEvent -= HideAddAttrPanel;
+        AddAttrCompleteEvent -= HideAttrPanel;
     }
 }

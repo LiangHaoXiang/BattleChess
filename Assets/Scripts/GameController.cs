@@ -44,7 +44,7 @@ public class GameController : MonoBehaviour
 
             if (scene.name.Equals("scene3(Main)"))  //若主场景加载完毕并切换到主场景
             {
-                Debug.Log("主场景已加载完毕并切换到主场景");
+                Debug.Log("主场景已加载完毕并切换到主场景");  //切换场景时，再次进入主场景，加载了两次
                 Scene3_UI.AddAttrCompleteEvent += UpdateBout;
             }
             else
@@ -120,5 +120,11 @@ public class GameController : MonoBehaviour
         {
             playing = Playing.OnRed;
         }
+    }
+
+    public void OnDestroy()
+    {
+        Debug.Log("销毁GameController");
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

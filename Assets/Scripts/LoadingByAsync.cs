@@ -13,7 +13,8 @@ public class LoadingByAsync : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+            instance = this;
         loadingSlider = GameObject.Find("LoadingSlider").GetComponent<Slider>();
     }
 

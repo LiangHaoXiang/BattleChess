@@ -77,11 +77,13 @@ public class GameUtil
         if (a_times <= b_times)
         {
             a.Hp -= b_damage * (a_times - 1);
+            b.Hp = 0;
             return defender;
         }
         else
         {
             b.Hp -= a_damage * b_times;
+            a.Hp = 0;
             return attacker;
         }
     }
@@ -130,8 +132,17 @@ public class GameUtil
         return chessAttrBox.Combat;
     }
 
-    //public static GameObject GetAttacker()
-    //{
-
-    //}
+    /// <summary>
+    /// 获取时间 格式如："13:26"  (13分26秒)
+    /// </summary>
+    /// <param name="time">秒</param>
+    /// <returns></returns>
+    public static string TimeToStr(float time)
+    {
+        int min = (int)time / 60;
+        int second = (int)time % 60;
+        string m = min >= 10 ? min.ToString() : "0" + min;
+        string s = second >= 10 ? second.ToString() : "0" + second;
+        return m + ":" + s;
+    }
 }

@@ -76,6 +76,12 @@ public abstract class BaseChess : MonoBehaviour
                     else if (chessReciprocalState != ChessReciprocalState.moving)
                     {
                         CancelChoose();
+                        Scene3_UI.ResetChessBoardPoints();
+                    }
+                    else
+                    {
+                        CancelChoose();
+                        Scene3_UI.ResetChessBoardPoints();
                     }
                 }
             }
@@ -365,5 +371,14 @@ public abstract class BaseChess : MonoBehaviour
             Scene3_UI.AddAttrCompleteEvent -= CancelChoose;
             //Chess_Boss.DetectBeAttackedEvent -= DetectJiangJun;
         }
+    }
+
+    public void OnDestroy()
+    {
+        CancelSubscribeEvents(gameObject);
+        //切换场景时，棋子会被销毁，取消Awake函数添加订阅的事件
+        PoolManager.PushEvent -= SubscribeEvents;
+        PoolManager.TakeEvent -= SubscribeEvents;
+        PoolManager.RestoreEvent -= CancelSubscribeEvents;
     }
 }

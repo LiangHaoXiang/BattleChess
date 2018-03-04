@@ -65,5 +65,18 @@ public class PoolManager : MonoBehaviour
     {
         chess.transform.SetParent(restoreChesses, true);
     }
+
+    public void ClearPool()
+    {
+        if (work_List != null)
+            work_List.Clear();
+        if (restore_List != null)
+            restore_List.Clear();
+    }
+
+    public void OnDestroy()
+    {
+        ClearPool();
+    }
 }
 

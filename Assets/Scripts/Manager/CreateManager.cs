@@ -176,4 +176,13 @@ public class CreateManager : MonoBehaviour
     {
         return blackBoss.gameObject;
     }
+
+    public void OnDestroy()
+    {
+        BaseChess.SetAttackerEvent -= GameController.SetAttacker;
+        BaseChess.SetDefenderEvent -= GameController.SetDefender;
+        BaseChess.MoveCompleteEvent -= GameController.Instance.UpdateGameData;
+        BaseChess.MoveCompleteEvent -= Scene3_UI.Instance.UpdateAttrPanel;
+        BaseChess.ChooseEvent -= Scene3_UI.Instance.OnChoose;
+    }
 }
