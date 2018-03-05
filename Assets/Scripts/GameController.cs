@@ -34,8 +34,9 @@ public class GameController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
     {
-        if (scene.isLoaded)
-        {
+        //Debug.Log("啊啊啊");
+        //if (scene.isLoaded)
+        //{
             IsBattle = false;
             gameStatus = GameStatus.NotBegin;
             playing = Playing.None;
@@ -53,7 +54,7 @@ public class GameController : MonoBehaviour
                 BaseChess.SetDefenderEvent -= SetDefender;
                 Scene3_UI.AddAttrCompleteEvent -= UpdateBout;
             }
-        }
+        //}
     }
 
     void Start () {
