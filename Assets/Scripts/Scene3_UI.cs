@@ -97,6 +97,7 @@ public class Scene3_UI : MonoBehaviour
 
         AddAttrCompleteEvent += HideAddAttrPanel;
         AddAttrCompleteEvent += HideAttrPanel;
+        TimeManager.TimeUpEvent += ShowEndPanel;
     }
 
     public List<GameObject> chessList;
@@ -251,6 +252,23 @@ public class Scene3_UI : MonoBehaviour
         }
     }
 
+    public void ShowEndPanel(string winerStr)
+    {
+        endPanel.SetActive(true);
+        if (winerStr == "Red")
+        {
+            winer.text = "红方胜";
+        }
+        else if (winerStr == "Black")
+        {
+            winer.text = "黑方胜";
+        }
+        else
+        {
+            winer.text = "和棋";
+        }
+    }
+
     /// <summary>
     /// 点击返回事件
     /// </summary>
@@ -263,5 +281,6 @@ public class Scene3_UI : MonoBehaviour
     {
         AddAttrCompleteEvent -= HideAddAttrPanel;
         AddAttrCompleteEvent -= HideAttrPanel;
+        TimeManager.TimeUpEvent -= ShowEndPanel;
     }
 }

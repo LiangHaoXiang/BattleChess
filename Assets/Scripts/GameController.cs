@@ -34,7 +34,6 @@ public class GameController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
     {
-        //Debug.Log("啊啊啊");
         //if (scene.isLoaded)
         //{
             IsBattle = false;

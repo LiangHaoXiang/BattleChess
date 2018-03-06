@@ -12,6 +12,7 @@ public enum GameStatus
     Going,                  //进行中
     Pause,                  //暂停
     Replay,                 //复盘
+    End,                    //结束
 }
 
 /// <summary>
@@ -89,6 +90,10 @@ public delegate void KilledEventHandler(GameObject chess);
 /// 加属性操作完成
 /// </summary>
 public delegate void AddAttrCompleteEventHandler();
+/// <summary>
+/// 游戏结束
+/// </summary>
+public delegate void GameOverEventHandler(string winer);
 
 public class GameDefine{
 

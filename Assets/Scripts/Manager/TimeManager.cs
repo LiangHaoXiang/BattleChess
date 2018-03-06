@@ -4,17 +4,24 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
+    private float allTime;
+    private float stepTime;
     public static float r_AllTime = 0.0f;       //红局时，单位s
     public static float b_AllTime = 0.0f;
     public static float r_StepTime = 0.0f;      //红步时，单位s
     public static float b_StepTime = 0.0f;
 
+    public static event GameOverEventHandler TimeUpEvent;
+
     void Awake()
     {
-        r_AllTime = 60.0f * 20.0f;
-        b_AllTime = 60.0f * 20.0f;
-        r_StepTime = 60.0f * 0.5f;
-        b_StepTime = 60.0f * 0.5f;
+        allTime = 60.0f * 0.3f;
+        stepTime = 60.0f * 0.2f;
+
+        r_AllTime = allTime;
+        b_AllTime = allTime;
+        r_StepTime = stepTime;
+        b_StepTime = stepTime;
 
         Scene3_UI.AddAttrCompleteEvent += ResetStepTime;
     }	
@@ -29,12 +36,16 @@ public class TimeManager : MonoBehaviour
                     r_StepTime -= Time.deltaTime;
                 else
                 {
+                    GameController.gameStatus = GameStatus.End;
+                    TimeUpEvent("Black");
                     r_StepTime = 0;
                 }
                 if (r_AllTime > 0)
                     r_AllTime -= Time.deltaTime;
                 else
                 {
+                    GameController.gameStatus = GameStatus.End;
+                    TimeUpEvent("Black");
                     r_AllTime = 0;
                 }
             }
@@ -44,12 +55,16 @@ public class TimeManager : MonoBehaviour
                     b_StepTime -= Time.deltaTime;
                 else
                 {
+                    GameController.gameStatus = GameStatus.End;
+                    TimeUpEvent("Red");
                     b_StepTime = 0;
                 }
                 if (b_AllTime > 0)
                     b_AllTime -= Time.deltaTime;
                 else
                 {
+                    GameController.gameStatus = GameStatus.End;
+                    TimeUpEvent("Red");
                     b_AllTime = 0;
                 }
             }
@@ -61,8 +76,8 @@ public class TimeManager : MonoBehaviour
     /// </summary>
     public void ResetStepTime()
     {
-        r_StepTime = 60.0f * 0.5f;
-        b_StepTime = 60.0f * 0.5f;
+        r_StepTime = r_AllTime < stepTime ? r_AllTime : stepTime;  //当局时小于规定步时，那么步时就等于局时
+        b_StepTime = b_AllTime < stepTime ? b_AllTime : stepTime;
     }
 
     /// <summary>
