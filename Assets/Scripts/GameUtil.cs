@@ -81,8 +81,8 @@ public class GameUtil
         AttrBox b = GetChessAttrList(defender);
         int a_damage = a.Attack <= b.Defence ? 1 : a.Attack - b.Defence;    //a对b造成的伤害
         int b_damage = b.Attack <= a.Defence ? 1 : b.Attack - a.Defence;    //b对a造成的伤害
-        int a_times = b.Hp / (a.Attack - b.Defence);      //a打死b所需回合数
-        int b_times = a.Hp / (b.Attack - a.Defence);      //b打死a所需回合数
+        int a_times = b.Hp / a_damage;      //a打死b所需回合数
+        int b_times = a.Hp / b_damage;      //b打死a所需回合数
         if (a_times <= b_times)
         {
             a.Hp -= b_damage * (a_times - 1);
