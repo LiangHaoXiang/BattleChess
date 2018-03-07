@@ -18,14 +18,13 @@ public abstract class BaseChess : MonoBehaviour
 
     public static int count = 0;
 
-    public int chessId;             //棋子唯一ID
+    [HideInInspector]
     public string chessName;
+    [HideInInspector]
     public AttrBox attrBox;
 
     public virtual void Awake()
     {
-        count++;
-        chessId = count;
         //createManager = GameObject.Find("CreateManager").GetComponent<CreateManager>();
         chessReciprocalState = ChessReciprocalState.unChoosed;
         chessSituationState = ChessSituationState.Idle;

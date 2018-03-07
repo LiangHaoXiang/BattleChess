@@ -103,7 +103,7 @@ public class CreateManager : MonoBehaviour
 
         b_Ju1 = Create(black_Ju, 0, 9); //b_Bing1 = Create(black_Zu, 0, 6);
 
-        //b_Ma1 = Create(black_Ma, 1, 9); b_Pao1 = Create(black_Pao, 1, 7);
+        b_Ma1 = Create(black_Ma, 1, 9);// b_Pao1 = Create(black_Pao, 1, 7);
 
         //b_Xiang1 = Create(black_Xiang, 2, 9); b_Bing2 = Create(black_Zu, 2, 6);
 
@@ -115,7 +115,7 @@ public class CreateManager : MonoBehaviour
 
         //b_Xiang2 = Create(black_Xiang, 6, 9); b_Bing4 = Create(black_Zu, 6, 6);
 
-        //b_Ma2 = Create(black_Ma, 7, 9); b_Pao2 = Create(black_Pao, 7, 7);
+        b_Ma2 = Create(black_Ma, 7, 9); //b_Pao2 = Create(black_Pao, 7, 7);
 
         b_Ju2 = Create(black_Ju, 8, 9); //b_Bing5 = Create(black_Zu, 8, 6);
 
@@ -124,7 +124,7 @@ public class CreateManager : MonoBehaviour
 
         r_Ju1 = Create(red_Ju, 0, 0); //r_Bing1 = Create(red_Bing, 0, 3);
 
-        //r_Ma1 = Create(red_Ma, 1, 0); r_Pao1 = Create(red_Pao, 1, 2);
+        r_Ma1 = Create(red_Ma, 1, 0); //r_Pao1 = Create(red_Pao, 1, 2);
 
         //r_Xiang1 = Create(red_Xiang, 2, 0); r_Bing2 = Create(red_Bing, 2, 3);
 
@@ -136,7 +136,7 @@ public class CreateManager : MonoBehaviour
 
         //r_Xiang2 = Create(red_Xiang, 6, 0); r_Bing4 = Create(red_Bing, 6, 3);
 
-        //r_Ma2 = Create(red_Ma, 7, 0); r_Pao2 = Create(red_Pao, 7, 2);
+        r_Ma2 = Create(red_Ma, 7, 0); //r_Pao2 = Create(red_Pao, 7, 2);
 
         r_Ju2 = Create(red_Ju, 8, 0); //r_Bing5 = Create(red_Bing, 8, 3);
 

@@ -6,6 +6,15 @@ using System;
 public class GameUtil
 {
     /// <summary>
+    /// 判断传入的二维点是否在棋盘内
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
+    public static bool IsInChessBoard(Vector2 value)
+    {
+        return (int)value.x >= 0 && (int)value.x <= 8 && (int)value.y >= 0 && (int)value.y <= 9;
+    }
+    /// <summary>
     /// 根据父物体名字后的数字和自身名字后的数字，得到二位坐标
     /// </summary>
     /// <param name="parentName">"rowY"</param>
@@ -100,16 +109,6 @@ public class GameUtil
         //Type baseType = type.BaseType;          //其实这样也可以的，这个是参考反射的
         BaseChess bc = chess.GetComponent(type) as BaseChess;   //关键是这一句
         return bc;
-    }
-
-    /// <summary>
-    /// 获取棋子Id
-    /// </summary>
-    /// <param name="chess"></param>
-    /// <returns></returns>
-    public static int GetChessId(GameObject chess)
-    {
-        return GetChessInstance(chess).chessId;
     }
 
     public static AttrBox GetChessAttrList(GameObject chess)

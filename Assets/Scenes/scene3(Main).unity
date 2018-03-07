@@ -7635,14 +7635,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   red_Ju: {fileID: 1735232252052336, guid: f288b5713e975644b97984a2a8a46070, type: 2}
-  red_Ma: {fileID: 0}
+  red_Ma: {fileID: 1552173476205470, guid: cab5a79b25c39624ea55d9241df46e2b, type: 2}
   red_Pao: {fileID: 0}
   red_Shi: {fileID: 0}
   red_Xiang: {fileID: 0}
   red_Bing: {fileID: 0}
   red_Shuai: {fileID: 0}
   black_Ju: {fileID: 1153787961292182, guid: bdf2af0c6bc28b04eb761cfb9473d1a0, type: 2}
-  black_Ma: {fileID: 0}
+  black_Ma: {fileID: 1969879564007972, guid: c9381d69c7a319c4b9e2b3ab8151d32b, type: 2}
   black_Pao: {fileID: 0}
   black_Shi: {fileID: 0}
   black_Xiang: {fileID: 0}
