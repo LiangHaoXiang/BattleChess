@@ -138,7 +138,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224515144661616248}
   - component: {fileID: 222782237540656626}
-  - component: {fileID: 114199371436865692}
+  - component: {fileID: 114046953616902434}
   - component: {fileID: 114300001565559456}
   m_Layer: 5
   m_Name: "\u7EA2\u5175"
@@ -227,7 +227,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114199371436865692
+--- !u!114 &114046953616902434
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1918636216241744}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53764286b95c68144b0011356110b697, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ce606818d87d684c8c5b5691623bfe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   chessName: 
@@ -279,7 +279,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114199371436865692}
+      - m_Target: {fileID: 114046953616902434}
         m_MethodName: ChesseClicked
         m_Mode: 1
         m_Arguments:

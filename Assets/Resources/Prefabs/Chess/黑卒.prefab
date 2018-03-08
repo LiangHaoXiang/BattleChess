@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224487045503449846}
   - component: {fileID: 222092932843426232}
-  - component: {fileID: 114425102750658964}
+  - component: {fileID: 114469871012383484}
   - component: {fileID: 114313509595145512}
   m_Layer: 5
   m_Name: "\u9ED1\u5352"
@@ -293,7 +293,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114425102750658964}
+      - m_Target: {fileID: 114469871012383484}
         m_MethodName: ChesseClicked
         m_Mode: 1
         m_Arguments:
@@ -333,7 +333,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114425102750658964
+--- !u!114 &114469871012383484
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -341,7 +341,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1286848677866488}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53764286b95c68144b0011356110b697, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ce606818d87d684c8c5b5691623bfe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   chessName: 
