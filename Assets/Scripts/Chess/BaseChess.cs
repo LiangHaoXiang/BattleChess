@@ -12,7 +12,7 @@ public abstract class BaseChess : MonoBehaviour
     public static event MoveEventHandler MoveEvent;
     public static event MoveCompleteHandler MoveCompleteEvent;
 
-    //protected CreateManager createManager;
+    protected CreateManager createManager;
     protected ChessReciprocalState chessReciprocalState;    //棋子交互状态
     protected ChessSituationState chessSituationState;      //棋子形势状态
 
@@ -25,7 +25,7 @@ public abstract class BaseChess : MonoBehaviour
 
     public virtual void Awake()
     {
-        //createManager = GameObject.Find("CreateManager").GetComponent<CreateManager>();
+        createManager = CreateManager.Instance;
         chessReciprocalState = ChessReciprocalState.unChoosed;
         chessSituationState = ChessSituationState.Idle;
         PoolManager.PushEvent += SubscribeEvents;//棋子被创建时就该订阅这一堆事件

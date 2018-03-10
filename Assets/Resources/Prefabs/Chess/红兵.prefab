@@ -138,7 +138,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224515144661616248}
   - component: {fileID: 222782237540656626}
-  - component: {fileID: 114046953616902434}
+  - component: {fileID: 114253087564232048}
   - component: {fileID: 114300001565559456}
   m_Layer: 5
   m_Name: "\u7EA2\u5175"
@@ -227,7 +227,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114046953616902434
+--- !u!114 &114253087564232048
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -279,7 +279,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114046953616902434}
+      - m_Target: {fileID: 114253087564232048}
         m_MethodName: ChesseClicked
         m_Mode: 1
         m_Arguments:
@@ -611,7 +611,7 @@ RectTransform:
   m_GameObject: {fileID: 1918636216241744}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.99999946, y: 0.99999946, z: 0.99999946}
+  m_LocalScale: {x: 0.99999803, y: 0.99999803, z: 0.99999803}
   m_Children:
   - {fileID: 224789371667040114}
   - {fileID: 224830478173436834}

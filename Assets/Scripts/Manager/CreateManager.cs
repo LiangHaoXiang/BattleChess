@@ -109,7 +109,7 @@ public class CreateManager : MonoBehaviour
 
         b_Shi1 = Create(black_Shi, 3, 9);
 
-        //blackBoss = Create(black_Jiang, 4, 9); b_Bing3 = Create(black_Zu, 4, 6);
+        blackBoss = Create(black_Jiang, 4, 9); b_Bing3 = Create(black_Zu, 4, 6);
 
         b_Shi1 = Create(black_Shi, 5, 9);
 
@@ -130,7 +130,7 @@ public class CreateManager : MonoBehaviour
 
         r_Shi1 = Create(red_Shi, 3, 0);
 
-        //redBoss = Create(red_Shuai, 4, 0); r_Bing3 = Create(red_Bing, 4, 3);
+        redBoss = Create(red_Shuai, 4, 0); r_Bing3 = Create(red_Bing, 4, 3);
 
         r_Shi2 = Create(red_Shi, 5, 0);
 
