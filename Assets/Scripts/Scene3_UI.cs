@@ -146,7 +146,7 @@ public class Scene3_UI : MonoBehaviour
     {
         CreateManager.Instance.InitChessBoard();
         GameController.gameStatus = GameStatus.Going;
-        GameController.Instance.UpdateGameData();
+        GameController.Instance.UpdateGame();
 
         beginBtn.SetActive(false);
     }

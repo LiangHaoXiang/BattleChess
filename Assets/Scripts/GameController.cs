@@ -76,25 +76,22 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// 更新游戏信息
+    /// 更新游戏
     /// </summary>
     /// <returns></returns>
-    public void UpdateGameData()
+    public void UpdateGame()
     {
-        if (IsBattle == true)
-        {
-            //战斗结束后再更新数据
-            IsBattle = false;
-            GameObject loser = GameUtil.Battle(attacker, defender);
-            KilledEvent(loser);
-        }
-        GameCache.UpdateChessData();
-        GameCache.SetMaps();
         if (gameStatus == GameStatus.Going)
         {
+            if (IsBattle == true)
+            {
+                //战斗结束后再更新数据
+                IsBattle = false;
+                GameObject loser = GameUtil.Battle(attacker, defender);
+                KilledEvent(loser);
+            }
             UpdateBout();
         }
-        UpdateGameDataCompleteEvent();
     }
 
     /// <summary>
@@ -104,6 +101,7 @@ public class GameController : MonoBehaviour
     {
         if (playing == Playing.None)
         {
+            UpdateGameData();
             playing = Playing.OnRed;
         }
         else if (playing == Playing.OnRed)
@@ -112,6 +110,7 @@ public class GameController : MonoBehaviour
         }
         else if (playing == Playing.RedAdding)
         {
+            UpdateGameData();
             playing = Playing.OnBlack;
         }
         else if (playing == Playing.OnBlack)
@@ -120,8 +119,18 @@ public class GameController : MonoBehaviour
         }
         else if (playing == Playing.BlackAdding)
         {
+            UpdateGameData();
             playing = Playing.OnRed;
         }
+    }
+
+    public void UpdateGameData()
+    {
+        GameCache.UpdateChessData();
+        GameCache.SetMaps();
+        GameCache.SetAttrMaps();
+        UpdateGameDataCompleteEvent();
+
     }
 
     public void OnDestroy()

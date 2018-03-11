@@ -37,6 +37,9 @@ public class Chess_Boss : BaseChess
             if (GameUtil.CompareVector2(currentPos, point))     //敌军可走点有此boss位置点，则说明在将军
             {
                 Debug.Log("将军！！");
+                chessSituationState = ChessSituationState.BeAttacked;
+                //检测是否被将死
+                //这时就要完善假设走步的逻辑了。
                 break;
             }
         }

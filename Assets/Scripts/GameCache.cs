@@ -17,9 +17,13 @@ public class GameCache
     /// </summary>
     private static Dictionary<Vector2, GameObject> vector2Chess;
     /// <summary>
-    /// 记录每走一步的所有棋局信息
+    /// 记录每回合的所有棋局图谱信息
     /// </summary>
     private static List<Dictionary<GameObject, Vector2>> maps;
+    /// <summary>
+    /// 记录每回合的所有棋子对应的属性信息
+    /// </summary>
+    private static List<Dictionary<GameObject, AttrBox>> attrMaps;
 
     public static void SetCoords(GameObject[,] cells)
     {
@@ -101,6 +105,14 @@ public class GameCache
             temp.Add(kvp.Key, kvp.Value);
         }
         maps.Add(temp);  //添加棋谱
+    }
+
+    /// <summary>
+    /// 添加每回合全部棋子对应属性信息图谱
+    /// </summary>
+    public static void SetAttrMaps()
+    {
+
     }
 
     public static List<Dictionary<GameObject, Vector2>> Maps

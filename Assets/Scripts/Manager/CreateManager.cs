@@ -142,7 +142,7 @@ public class CreateManager : MonoBehaviour
 
         BaseChess.SetAttackerEvent += GameController.SetAttacker;
         BaseChess.SetDefenderEvent += GameController.SetDefender;
-        BaseChess.MoveCompleteEvent += GameController.Instance.UpdateGameData;
+        BaseChess.MoveCompleteEvent += GameController.Instance.UpdateGame;
         BaseChess.MoveCompleteEvent += Scene3_UI.Instance.UpdateAttrPanel;
         BaseChess.ChooseEvent += Scene3_UI.Instance.OnChoose;
     }
@@ -181,7 +181,7 @@ public class CreateManager : MonoBehaviour
     {
         BaseChess.SetAttackerEvent -= GameController.SetAttacker;
         BaseChess.SetDefenderEvent -= GameController.SetDefender;
-        BaseChess.MoveCompleteEvent -= GameController.Instance.UpdateGameData;
+        BaseChess.MoveCompleteEvent -= GameController.Instance.UpdateGame;
         BaseChess.MoveCompleteEvent -= Scene3_UI.Instance.UpdateAttrPanel;
         BaseChess.ChooseEvent -= Scene3_UI.Instance.OnChoose;
     }
