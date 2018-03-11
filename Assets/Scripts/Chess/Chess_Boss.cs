@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public delegate bool DetectBeAttackedEventHandler(Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess); //被将军
 public class Chess_Boss : BaseChess
 {
-    public static event DetectBeAttackedEventHandler DetectBeAttackedEvent;   //被将军事件
     public override void Awake()
     {
         chessName = "Boss";
@@ -26,9 +24,22 @@ public class Chess_Boss : BaseChess
     /// <summary>
     /// 检测是否被将军
     /// </summary>
-    public static void DetectBeAttacked(Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess)
+    public void DetectBeAttacked()
     {
-        DetectBeAttackedEvent(chess2Vector, vector2Chess);
+        Vector2 currentPos = GameCache.Chess2Vector[gameObject];
+        List<Vector2> enemyPoints;
+        if (gameObject.tag == "Red")
+            enemyPoints = GameUtil.getTeamMovePoints(PoolManager.work_List, "Black", GameCache.Chess2Vector, GameCache.Vector2Chess);
+        else
+            enemyPoints = GameUtil.getTeamMovePoints(PoolManager.work_List, "Red", GameCache.Chess2Vector, GameCache.Vector2Chess);
+        foreach(Vector2 point in enemyPoints)
+        {
+            if (GameUtil.CompareVector2(currentPos, point))     //敌军可走点有此boss位置点，则说明在将军
+            {
+                Debug.Log("将军！！");
+                break;
+            }
+        }
     }
     /// <summary>
     /// 被将死，换言之，无论怎么走都无法改变被将军的状态。
@@ -68,6 +79,16 @@ public class Chess_Boss : BaseChess
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// 重写被点击方法，规定将帅不可以加属性
+    /// </summary>
+    public override void ChesseClicked()
+    {
+        if (GameController.playing == Playing.BlackAdding || GameController.playing == Playing.RedAdding)
+            return;
+        base.ChesseClicked();
     }
 
     public override List<Vector2> CanMovePoints(Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess)
@@ -183,5 +204,27 @@ public class Chess_Boss : BaseChess
         }
     }
 
+
+    /// <summary>
+    /// 增加监听检测被将军事件
+    /// </summary>
+    /// <param name="chess"></param>
+    public override void SubscribeEvents(GameObject chess)
+    {
+        if (chess == gameObject)
+        {
+            GameController.UpdateGameDataCompleteEvent += DetectBeAttacked;
+            base.SubscribeEvents(chess);
+        }
+    }
+
+    public override void CancelSubscribeEvents(GameObject chess)
+    {
+        if (chess == gameObject)
+        {
+            GameController.UpdateGameDataCompleteEvent -= DetectBeAttacked;
+            base.CancelSubscribeEvents(chess);
+        }
+    }
 }
 

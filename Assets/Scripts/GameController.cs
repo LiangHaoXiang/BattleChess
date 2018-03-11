@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get { return instance; } }
 
     public static event KilledEventHandler KilledEvent;
+    public static event UpdateGameDataCompleteEventHandler UpdateGameDataCompleteEvent;
     public static bool IsBattle = false;                //是否发生战斗
     private static GameObject attacker;                 //攻击方
     private static GameObject defender;                 //被攻击方
@@ -93,6 +94,7 @@ public class GameController : MonoBehaviour
         {
             UpdateBout();
         }
+        UpdateGameDataCompleteEvent();
     }
 
     /// <summary>

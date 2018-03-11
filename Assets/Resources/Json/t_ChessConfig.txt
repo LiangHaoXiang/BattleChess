@@ -1,6 +1,6 @@
 {
     "Attributes": [
-        {"name": "Boss",	"hp": 1,	"attack": 1000,	"defence": 0},
+        {"name": "Boss",	"hp": 1,	"attack": 99999,	"defence": 0},
 	{"name": "Ju",		"hp": 200,	"attack": 50,	"defence": 40},
 	{"name": "Ma",		"hp": 180,	"attack": 40,	"defence": 25},
 	{"name": "Pao",		"hp": 180,	"attack": 45,	"defence": 20},

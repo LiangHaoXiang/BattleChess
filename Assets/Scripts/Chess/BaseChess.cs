@@ -136,7 +136,7 @@ public abstract class BaseChess : MonoBehaviour
     /// <param name="chess2Vector">棋局信息</param>
     /// <param name="vector2Chess">棋局信息</param>
     /// <returns></returns>
-    public abstract List<Vector2> CanMovePoints(Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess);
+    public abstract List<Vector2> CanMovePoints(Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess);    
     /// <summary>
     /// 被杀
     /// </summary>
@@ -146,40 +146,6 @@ public abstract class BaseChess : MonoBehaviour
         {
             PoolManager.Restore(gameObject);//被杀 回收
         }
-    }
-    /// <summary>
-    /// 判断是否会将军
-    /// </summary>
-    public bool DetectJiangJun(Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess)
-    {
-        //就是判断当前可移动的点包含将军的位置
-        Vector2[] canMovePoints = CanMovePoints(chess2Vector, vector2Chess).ToArray();
-
-        for (int i = 0; i < canMovePoints.Length; i++)
-        {
-            //if (GetComponent<ChessCamp>().camp == Camp.Red)
-            //{
-            //    if (canMovePoints[i] == chess2Vector[createManager.GetBlackBoss()])
-            //    {
-            //        Debug.Log("将军，黑方注意");
-            //        chessSituationState = ChessSituationState.Attacking;
-            //        createManager.GetBlackBoss().GetComponent<Chess_Boss>().chessSituationState = ChessSituationState.BeAttacked;
-            //        return true;
-            //    }
-            //}
-            //else
-            //{
-            //    if (canMovePoints[i] == chess2Vector[createManager.GetRedBoss()])
-            //    {
-            //        Debug.Log("将军，红方注意");
-            //        chessSituationState = ChessSituationState.Attacking;
-            //        createManager.GetRedBoss().GetComponent<Chess_Boss>().chessSituationState = ChessSituationState.BeAttacked;
-            //        return true;
-            //    }
-            //}
-        }
-        chessSituationState = ChessSituationState.Idle;
-        return false;
     }
 
     public void OnMoveStart()
@@ -196,7 +162,7 @@ public abstract class BaseChess : MonoBehaviour
     /// <summary>
     /// 棋子点击事件
     /// </summary>
-    public void ChesseClicked()
+    public virtual void ChesseClicked()
     {
         if (GameController.playing == Playing.OnRed)
         {
@@ -339,7 +305,7 @@ public abstract class BaseChess : MonoBehaviour
     /// 订阅一堆的事件
     /// </summary>
     /// <param name="chess">增加判断是否是自身，因为这个方法在每个派生类中都添加订阅了，事件触发时只执行自身的方法，其他方法没用</param>
-    public void SubscribeEvents(GameObject chess)
+    public virtual void SubscribeEvents(GameObject chess)
     {
         if (chess == gameObject)
         {
@@ -350,14 +316,13 @@ public abstract class BaseChess : MonoBehaviour
             PointCell.PointCellClickEvent += Move;
             MoveCompleteEvent += CancelChoose; //订阅重置棋子状态事件
             Scene3_UI.AddAttrCompleteEvent += CancelChoose;
-            //Chess_Boss.DetectBeAttackedEvent += DetectJiangJun;            //订阅检测将军事件
         }
     }
     /// <summary>
     /// 取消订阅一堆的事件
     /// </summary>
     /// <param name="chess">增加判断是否是自身，因为这个方法在每个派生类中都添加订阅了，事件触发时只执行自身的方法，其他方法没用</param>
-    public void CancelSubscribeEvents(GameObject chess)
+    public virtual void CancelSubscribeEvents(GameObject chess)
     {
         if (chess == gameObject)
         {
@@ -368,7 +333,6 @@ public abstract class BaseChess : MonoBehaviour
             ChooseEvent -= CancelChoose;
             MoveCompleteEvent -= CancelChoose;
             Scene3_UI.AddAttrCompleteEvent -= CancelChoose;
-            //Chess_Boss.DetectBeAttackedEvent -= DetectJiangJun;
         }
     }
 

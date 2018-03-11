@@ -39,7 +39,6 @@ GameObject:
   - component: {fileID: 222998246383350030}
   - component: {fileID: 114165166925746684}
   - component: {fileID: 114020208209697794}
-  - component: {fileID: 114630548204564820}
   m_Layer: 5
   m_Name: "\u7EA2\u5E05"
   m_TagString: Red
@@ -374,19 +373,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114630548204564820
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1125480494702762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 920c8b9657a1f554090fc097c0f461a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chessName: 
-  attrBox: {fileID: 0}
 --- !u!114 &114635363950393940
 MonoBehaviour:
   m_ObjectHideFlags: 1

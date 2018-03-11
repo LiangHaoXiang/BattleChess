@@ -144,4 +144,46 @@ public class GameUtil
         string s = second >= 10 ? second.ToString() : "0" + second;
         return m + ":" + s;
     }
+
+
+    /// <summary>
+    /// 获取在场的红方或黑方所有棋子
+    /// </summary>
+    /// <param name="chessList">工作区棋子列表</param>
+    /// <param name="tag">"Red"  "Black"</param>
+    /// <returns></returns>
+    public static List<GameObject> getChessListByTag(List<GameObject> chessList, string tag)
+    {
+        List<GameObject> result = new List<GameObject>();
+        for (int i = 0; i < chessList.Count; i++)
+        {
+            if (chessList[i].tag == tag)
+                result.Add(chessList[i]);
+        }
+        return result;
+    }
+
+
+    /// <summary>
+    /// 获取红方或黑方所有可走点
+    /// </summary>
+    /// <param name="chessList">工作区棋子</param>
+    /// <param name="tag">阵营</param>
+    /// <param name="chess2Vector">棋局信息</param>
+    /// <param name="vector2Chess">棋局信息</param>
+    /// <returns></returns>
+    public static List<Vector2> getTeamMovePoints(List<GameObject> chessList, string tag, Dictionary<GameObject, Vector2> chess2Vector, Dictionary<Vector2, GameObject> vector2Chess)
+    {
+        List<Vector2> allMovePoints = new List<Vector2>();
+        List<GameObject> chessTeam = getChessListByTag(chessList, tag);
+        foreach(GameObject chess in chessTeam)
+        {
+            List<Vector2> chessPoints = GetChessInstance(chess).CanMovePoints(chess2Vector, vector2Chess);
+            foreach(Vector2 point in chessPoints)
+            {
+                allMovePoints.Add(point);
+            }
+        }
+        return allMovePoints;
+    }
 }

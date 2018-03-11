@@ -95,6 +95,11 @@ public delegate void AddAttrCompleteEventHandler();
 /// </summary>
 public delegate void GameOverEventHandler(string winer);
 
+/// <summary>
+/// 更新棋局信息完毕
+/// </summary>
+public delegate void UpdateGameDataCompleteEventHandler();
+
 public class GameDefine{
 
 }
