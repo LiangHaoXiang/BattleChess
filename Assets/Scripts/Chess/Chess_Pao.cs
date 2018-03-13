@@ -8,6 +8,10 @@ public class Chess_Pao : BaseChess
 {
     public override void Awake()
     {
+        if (gameObject.tag == "Red")
+            chineseChessName = "红炮";
+        else
+            chineseChessName = "黑炮";
         chessName = "Pao";
         base.Awake();
     }

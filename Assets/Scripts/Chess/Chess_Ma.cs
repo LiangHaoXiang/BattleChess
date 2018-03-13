@@ -9,6 +9,10 @@ public class Chess_Ma : BaseChess
 
     public override void Awake()
     {
+        if (gameObject.tag == "Red")
+            chineseChessName = "红马";
+        else
+            chineseChessName = "黑马";
         chessName = "Ma";
         base.Awake();
     }

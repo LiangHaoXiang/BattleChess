@@ -19,6 +19,8 @@ public abstract class BaseChess : MonoBehaviour
     public static int count = 0;
 
     [HideInInspector]
+    public string chineseChessName;
+    [HideInInspector]
     public string chessName;
     [HideInInspector]
     public AttrBox attrBox;
@@ -316,6 +318,7 @@ public abstract class BaseChess : MonoBehaviour
             PointCell.PointCellClickEvent += Move;
             MoveCompleteEvent += CancelChoose; //订阅重置棋子状态事件
             Scene3_UI.AddAttrCompleteEvent += CancelChoose;
+            Scene3_UI.UndoEvent += Reset;
         }
     }
     /// <summary>
@@ -333,6 +336,7 @@ public abstract class BaseChess : MonoBehaviour
             ChooseEvent -= CancelChoose;
             MoveCompleteEvent -= CancelChoose;
             Scene3_UI.AddAttrCompleteEvent -= CancelChoose;
+            Scene3_UI.UndoEvent -= Reset;
         }
     }
 

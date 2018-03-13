@@ -99,6 +99,10 @@ public delegate void GameOverEventHandler(string winer);
 /// 更新棋局信息完毕
 /// </summary>
 public delegate void UpdateGameDataCompleteEventHandler();
+/// <summary>
+/// 悔棋事件
+/// </summary>
+public delegate void UndoEventHandler();
 
 public class GameDefine{
 

@@ -19,11 +19,11 @@ public class GameCache
     /// <summary>
     /// 记录每回合的所有棋局图谱信息
     /// </summary>
-    private static List<Dictionary<GameObject, Vector2>> maps;
+    public static List<Dictionary<GameObject, Vector2>> maps;
     /// <summary>
     /// 记录每回合的所有棋子对应的属性信息
     /// </summary>
-    private static List<Dictionary<GameObject, AttrBox>> attrMaps;
+    public static List<Dictionary<GameObject, string>> attrMaps;
 
     public static void SetCoords(GameObject[,] cells)
     {
@@ -112,17 +112,28 @@ public class GameCache
     /// </summary>
     public static void SetAttrMaps()
     {
-
-    }
-
-    public static List<Dictionary<GameObject, Vector2>> Maps
-    {
-        get { return maps; }
+        if (attrMaps == null)
+            attrMaps = new List<Dictionary<GameObject, string>>();
+        Dictionary<GameObject, string> dic = new Dictionary<GameObject, string>(); 
+        foreach (GameObject chess in PoolManager.work_List)
+        {
+            AttrBox chessAttrs = GameUtil.GetChessAttrList(chess);
+            string attrStr = chessAttrs.Hp + "_" + chessAttrs.Attack + "_" + chessAttrs.Defence;
+            //AttrBox temp = new AttrBox(); //这里要想办法优化，频繁创建对象消耗性能
+            //temp.Hp = chessAttrs.Hp;
+            //temp.Attack = chessAttrs.Attack;
+            //temp.Defence = chessAttrs.Defence;
+            //dic.Add(chess, temp);
+            dic.Add(chess, attrStr);
+        }
+        attrMaps.Add(dic);
     }
 
     public static void ClearMaps()
     {
         if (maps != null)
             maps.Clear();
+        if (attrMaps != null)
+            attrMaps.Clear();
     }
 }

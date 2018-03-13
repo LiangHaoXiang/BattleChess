@@ -34,11 +34,13 @@ public class Scene3_UI : MonoBehaviour
     private GameObject rightGameMode;
     private GameObject rightReplayMode;
     private GameObject blackDetailPanel;
+    private Text b_Name;
     private Text b_Hp;
     private Text b_Attack;
     private Text b_Defence;
     private Text b_Combat;
     private GameObject redDetailPanel;
+    private Text r_Name;
     private Text r_Hp;
     private Text r_Attack;
     private Text r_Defence;
@@ -48,6 +50,7 @@ public class Scene3_UI : MonoBehaviour
     private GameObject curAddChess;
     private AttrBox curAttr;
     public static event AddAttrCompleteEventHandler AddAttrCompleteEvent;
+    public static event UndoEventHandler UndoEvent;
 
     void Awake()
     {
@@ -85,11 +88,13 @@ public class Scene3_UI : MonoBehaviour
         winer = GameObject.Find("Canvas/Middle/EndPanel/ResultLabel").GetComponent<Text>();
         /******************右******************/
         blackDetailPanel = GameObject.Find("Canvas/Right/BlackAttrDetail");
+        b_Name = blackDetailPanel.transform.FindChild("ChessName").GetComponent<Text>();
         b_Hp = blackDetailPanel.transform.FindChild("Grid/Hp/Value").GetComponent<Text>();
         b_Attack = blackDetailPanel.transform.FindChild("Grid/Attack/Value").GetComponent<Text>();
         b_Defence = blackDetailPanel.transform.FindChild("Grid/Defence/Value").GetComponent<Text>();
         b_Combat = blackDetailPanel.transform.FindChild("Combat/Value").GetComponent<Text>();
         redDetailPanel = GameObject.Find("Canvas/Right/RedAttrDetail");
+        r_Name = redDetailPanel.transform.FindChild("ChessName").GetComponent<Text>();
         r_Hp = redDetailPanel.transform.FindChild("Grid/Hp/Value").GetComponent<Text>();
         r_Attack = redDetailPanel.transform.FindChild("Grid/Attack/Value").GetComponent<Text>();
         r_Defence = redDetailPanel.transform.FindChild("Grid/Defence/Value").GetComponent<Text>();
@@ -98,6 +103,7 @@ public class Scene3_UI : MonoBehaviour
         AddAttrCompleteEvent += HideAddAttrPanel;
         AddAttrCompleteEvent += HideAttrPanel;
         TimeManager.TimeUpEvent += ShowEndPanel;
+        UndoEvent += ResetChessBoardPoints;
     }
 
     public List<GameObject> chessList;
@@ -155,6 +161,7 @@ public class Scene3_UI : MonoBehaviour
     /// 1.开始移动时
     /// 2.取消自身选中时
     /// 3.切换选中时
+    /// 4.悔棋时
     /// </summary>
     public static void ResetChessBoardPoints()
     {
@@ -175,21 +182,26 @@ public class Scene3_UI : MonoBehaviour
         UpdateAttrPanel(chess);
         bool isAdding = GameController.playing == Playing.RedAdding || GameController.playing == Playing.BlackAdding;
         addAtrrPanel.SetActive(isAdding);
-        addChessName.text = isAdding ? chess.name : "";
+        if (isAdding)
+        {
+            addChessName.text = GameUtil.GetChineseChessName(chess);
+        }
+        else
+            addChessName.text = "";        
     }
 
     public void UpdateAttrPanel()
     {
         if (curAddChess != null && curAttr != null)
         {
-            SetAttrTexts(curAttr, curAddChess.tag);
+            SetAttrTexts(curAttr, curAddChess);
         }
     }
 
     public void UpdateAttrPanel(GameObject chess)
     {
         AttrBox attrBox = GameUtil.GetChessAttrList(chess);
-        SetAttrTexts(attrBox, chess.tag);
+        SetAttrTexts(attrBox, chess);
     }
 
     public void OnHpClick()
@@ -226,7 +238,7 @@ public class Scene3_UI : MonoBehaviour
     /// </summary>
     /// <param name="attrBox">属性</param>
     /// <param name="tag">棋子阵营</param>
-    public void SetAttrTexts(AttrBox attrBox, string tag)
+    public void SetAttrTexts(AttrBox attrBox, GameObject chess)
     {
         if (attrBox.Hp == 0)
         {
@@ -234,10 +246,11 @@ public class Scene3_UI : MonoBehaviour
             blackDetailPanel.SetActive(false);
             return;
         }
-        redDetailPanel.SetActive(tag == "Red");
-        blackDetailPanel.SetActive(tag == "Black");
-        if (tag == "Red")
+        redDetailPanel.SetActive(chess.tag == "Red");
+        blackDetailPanel.SetActive(chess.tag == "Black");
+        if (chess.tag == "Red")
         {
+            r_Name.text = GameUtil.GetChineseChessName(curAddChess);
             r_Hp.text = attrBox.Hp.ToString();
             r_Attack.text = attrBox.Attack.ToString();
             r_Defence.text = attrBox.Defence.ToString();
@@ -245,6 +258,7 @@ public class Scene3_UI : MonoBehaviour
         }
         else
         {
+            b_Name.text = GameUtil.GetChineseChessName(curAddChess);
             b_Hp.text = attrBox.Hp.ToString();
             b_Attack.text = attrBox.Attack.ToString();
             b_Defence.text = attrBox.Defence.ToString();
@@ -270,6 +284,14 @@ public class Scene3_UI : MonoBehaviour
     }
 
     /// <summary>
+    /// 再来一局
+    /// </summary>
+    public void OnPlayAgainClick()
+    {
+
+    }
+
+    /// <summary>
     /// 点击返回事件
     /// </summary>
     public void OnBackClick()
@@ -277,8 +299,37 @@ public class Scene3_UI : MonoBehaviour
         SceneManager.LoadScene("scene1");
     }
 
+    /// <summary>
+    /// 悔棋点击事件
+    /// </summary>
+    public void OnUndoClick()
+    {
+        if (GameCache.maps.Count >= 3)
+        {
+            //回合回退
+            if (GameController.playing == Playing.OnRed || GameController.playing == Playing.RedAdding)
+                GameController.playing = Playing.OnRed;
+            else
+                GameController.playing = Playing.OnBlack;
+            Dictionary<GameObject, Vector2> temp = GameCache.maps[GameCache.maps.Count - 1 - 2];
+            foreach (KeyValuePair<GameObject, Vector2> kvp in temp)
+            {
+                GameUtil.ResetChessByMaps(kvp.Key, kvp.Value);
+            }
+            GameCache.maps.RemoveRange(GameCache.maps.Count - 2, 2);
+            GameCache.UpdateChessData();
+            UndoEvent();
+        }
+        else
+        {
+            //GameObject.Find("UndoButton").GetComponent<Button>().enabled = false;
+        }
+    }
+
+
     public void OnDestroy()
     {
+        UndoEvent -= ResetChessBoardPoints;
         AddAttrCompleteEvent -= HideAddAttrPanel;
         AddAttrCompleteEvent -= HideAttrPanel;
         TimeManager.TimeUpEvent -= ShowEndPanel;

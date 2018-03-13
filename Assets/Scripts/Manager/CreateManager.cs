@@ -90,6 +90,8 @@ public class CreateManager : MonoBehaviour
     private static CreateManager instance = null;
     public static CreateManager Instance { get { return instance; } }
 
+    public bool hadAddEvent = false;
+
     void Awake()
     {
         if (instance == null)
@@ -140,11 +142,15 @@ public class CreateManager : MonoBehaviour
 
         r_Ju2 = Create(red_Ju, 8, 0); r_Bing5 = Create(red_Bing, 8, 3);
 
-        BaseChess.SetAttackerEvent += GameController.SetAttacker;
-        BaseChess.SetDefenderEvent += GameController.SetDefender;
-        BaseChess.MoveCompleteEvent += GameController.Instance.UpdateGame;
-        BaseChess.MoveCompleteEvent += Scene3_UI.Instance.UpdateAttrPanel;
-        BaseChess.ChooseEvent += Scene3_UI.Instance.OnChoose;
+        if (hadAddEvent == false)
+        {
+            hadAddEvent = true;
+            BaseChess.SetAttackerEvent += GameController.SetAttacker;
+            BaseChess.SetDefenderEvent += GameController.SetDefender;
+            BaseChess.MoveCompleteEvent += GameController.Instance.UpdateGame;
+            BaseChess.MoveCompleteEvent += Scene3_UI.Instance.UpdateAttrPanel;
+            BaseChess.ChooseEvent += Scene3_UI.Instance.OnChoose;
+        }
     }
 
     /// <summary>

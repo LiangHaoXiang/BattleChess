@@ -116,9 +116,14 @@ public class GameUtil
         return GetChessInstance(chess).attrBox;
     }
 
-    public static string GetChessName(GameObject chess)
+    /// <summary>
+    /// 获取棋子中文名
+    /// </summary>
+    /// <param name="chess"></param>
+    /// <returns></returns>
+    public static string GetChineseChessName(GameObject chess)
     {
-        return GetChessInstance(chess).chessName;
+        return GetChessInstance(chess).chineseChessName;
     }
 
     public static int GetChessCombat(GameObject chess)
@@ -186,4 +191,36 @@ public class GameUtil
         }
         return allMovePoints;
     }
+
+    /// <summary>
+    /// 解析属性字符串为int数组
+    /// </summary>
+    /// <param name="str">格式为"100_50_20",第一个数是生命，第二个攻击，第三个防御</param>
+    /// <returns></returns>
+    public static int[] StrAttr2IntArr(string str)
+    {
+        int[] arr = new int[3];
+        string[] sArray = str.Split('_');
+        for(int i =0;i<3; i++)
+        {
+            arr[i] = Convert.ToInt32(sArray[i]);
+        }
+        return arr;
+    }
+
+    /// <summary>
+    /// 还原某个棋子在某个棋局的位置
+    /// </summary>
+    /// <param name="chess"></param>
+    /// <param name="point"></param>
+    /// <param name="mapIndex">棋谱第index步</param>
+    public static void ResetChessByMaps(GameObject chess, Vector2 point)
+    {
+        if (chess.transform.parent != PoolManager.workChesses)
+            PoolManager.Take(chess);    //被吃的棋子从回收区提取回来
+        int x = (int)point.x;
+        int y = (int)point.y;
+        chess.transform.position = Scene3_UI.cells[x, y].transform.position;
+    }
+
 }
