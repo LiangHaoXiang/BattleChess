@@ -102,8 +102,10 @@ public class Scene3_UI : MonoBehaviour
 
         AddAttrCompleteEvent += HideAddAttrPanel;
         AddAttrCompleteEvent += HideAttrPanel;
-        TimeManager.TimeUpEvent += ShowEndPanel;
+        TimeManager.TimeUpEventWithParam += ShowEndPanel;
         UndoEvent += ResetChessBoardPoints;
+        TimeManager.TimeUpEvent += ResetChessBoardPoints;
+        TimeManager.TimeUpEvent += HideAddAttrPanel;
     }
 
     public List<GameObject> chessList;
@@ -150,10 +152,7 @@ public class Scene3_UI : MonoBehaviour
     /// </summary>
     public void OnBeginClick()
     {
-        CreateManager.Instance.InitChessBoard();
-        GameController.gameStatus = GameStatus.Going;
-        GameController.Instance.UpdateGame();
-
+        GameController.BeginGame();
         beginBtn.SetActive(false);
     }
     /// <summary>
@@ -283,12 +282,20 @@ public class Scene3_UI : MonoBehaviour
         }
     }
 
+    public void HideEndPanel()
+    {
+        endPanel.SetActive(false);
+    }
+
     /// <summary>
     /// 再来一局
     /// </summary>
     public void OnPlayAgainClick()
     {
-
+        HideEndPanel();
+        GameController.ResetGame();
+        TimeManager.ResetAllTime();
+        OnBeginClick();
     }
 
     /// <summary>
@@ -332,6 +339,8 @@ public class Scene3_UI : MonoBehaviour
         UndoEvent -= ResetChessBoardPoints;
         AddAttrCompleteEvent -= HideAddAttrPanel;
         AddAttrCompleteEvent -= HideAttrPanel;
-        TimeManager.TimeUpEvent -= ShowEndPanel;
+        TimeManager.TimeUpEventWithParam -= ShowEndPanel;
+        TimeManager.TimeUpEvent -= ResetChessBoardPoints;
+        TimeManager.TimeUpEvent -= HideAddAttrPanel;
     }
 }

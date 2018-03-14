@@ -90,7 +90,8 @@ public class CreateManager : MonoBehaviour
     private static CreateManager instance = null;
     public static CreateManager Instance { get { return instance; } }
 
-    public bool hadAddEvent = false;
+    public bool hadCreated = false;
+    public Dictionary<GameObject, Vector2> bornMap;     //棋盘生成时最开始的棋谱
 
     void Awake()
     {
@@ -102,54 +103,64 @@ public class CreateManager : MonoBehaviour
     /// </summary>
     public void InitChessBoard()
     {
-
-        b_Ju1 = Create(black_Ju, 0, 9); b_Bing1 = Create(black_Zu, 0, 6);
-
-        b_Ma1 = Create(black_Ma, 1, 9); b_Pao1 = Create(black_Pao, 1, 7);
-
-        b_Xiang1 = Create(black_Xiang, 2, 9); b_Bing2 = Create(black_Zu, 2, 6);
-
-        b_Shi1 = Create(black_Shi, 3, 9);
-
-        blackBoss = Create(black_Jiang, 4, 9); b_Bing3 = Create(black_Zu, 4, 6);
-
-        b_Shi1 = Create(black_Shi, 5, 9);
-
-        b_Xiang2 = Create(black_Xiang, 6, 9); b_Bing4 = Create(black_Zu, 6, 6);
-
-        b_Ma2 = Create(black_Ma, 7, 9); b_Pao2 = Create(black_Pao, 7, 7);
-
-        b_Ju2 = Create(black_Ju, 8, 9); b_Bing5 = Create(black_Zu, 8, 6);
-
-
-
-
-        r_Ju1 = Create(red_Ju, 0, 0); r_Bing1 = Create(red_Bing, 0, 3);
-
-        r_Ma1 = Create(red_Ma, 1, 0); r_Pao1 = Create(red_Pao, 1, 2);
-
-        r_Xiang1 = Create(red_Xiang, 2, 0); r_Bing2 = Create(red_Bing, 2, 3);
-
-        r_Shi1 = Create(red_Shi, 3, 0);
-
-        redBoss = Create(red_Shuai, 4, 0); r_Bing3 = Create(red_Bing, 4, 3);
-
-        r_Shi2 = Create(red_Shi, 5, 0);
-
-        r_Xiang2 = Create(red_Xiang, 6, 0); r_Bing4 = Create(red_Bing, 6, 3);
-
-        r_Ma2 = Create(red_Ma, 7, 0); r_Pao2 = Create(red_Pao, 7, 2);
-
-        r_Ju2 = Create(red_Ju, 8, 0); r_Bing5 = Create(red_Bing, 8, 3);
-
-        if (hadAddEvent == false)
+        if (hadCreated == false)
         {
-            hadAddEvent = true;
+            hadCreated = true;
+            if (bornMap == null)
+                bornMap = new Dictionary<GameObject, Vector2>();
+
+            b_Ju1 = Create(black_Ju, 0, 9); b_Bing1 = Create(black_Zu, 0, 6);
+
+            b_Ma1 = Create(black_Ma, 1, 9); b_Pao1 = Create(black_Pao, 1, 7);
+
+            b_Xiang1 = Create(black_Xiang, 2, 9); b_Bing2 = Create(black_Zu, 2, 6);
+
+            b_Shi1 = Create(black_Shi, 3, 9);
+
+            blackBoss = Create(black_Jiang, 4, 9); b_Bing3 = Create(black_Zu, 4, 6);
+
+            b_Shi1 = Create(black_Shi, 5, 9);
+
+            b_Xiang2 = Create(black_Xiang, 6, 9); b_Bing4 = Create(black_Zu, 6, 6);
+
+            b_Ma2 = Create(black_Ma, 7, 9); b_Pao2 = Create(black_Pao, 7, 7);
+
+            b_Ju2 = Create(black_Ju, 8, 9); b_Bing5 = Create(black_Zu, 8, 6);
+
+
+
+
+            r_Ju1 = Create(red_Ju, 0, 0); r_Bing1 = Create(red_Bing, 0, 3);
+
+            r_Ma1 = Create(red_Ma, 1, 0); r_Pao1 = Create(red_Pao, 1, 2);
+
+            r_Xiang1 = Create(red_Xiang, 2, 0); r_Bing2 = Create(red_Bing, 2, 3);
+
+            r_Shi1 = Create(red_Shi, 3, 0);
+
+            redBoss = Create(red_Shuai, 4, 0); r_Bing3 = Create(red_Bing, 4, 3);
+
+            r_Shi2 = Create(red_Shi, 5, 0);
+
+            r_Xiang2 = Create(red_Xiang, 6, 0); r_Bing4 = Create(red_Bing, 6, 3);
+
+            r_Ma2 = Create(red_Ma, 7, 0); r_Pao2 = Create(red_Pao, 7, 2);
+
+            r_Ju2 = Create(red_Ju, 8, 0); r_Bing5 = Create(red_Bing, 8, 3);
+            
             BaseChess.SetAttackerEvent += GameController.SetAttacker;
             BaseChess.SetDefenderEvent += GameController.SetDefender;
             BaseChess.MoveCompleteEvent += GameController.Instance.UpdateGame;
             BaseChess.MoveCompleteEvent += Scene3_UI.Instance.UpdateAttrPanel;
             BaseChess.ChooseEvent += Scene3_UI.Instance.OnChoose;
+        }
+        else //跑这里一般都是再来一盘和复盘的时候。
+        {
+            Debug.Log("从池里面提取出来");
+            foreach(KeyValuePair<GameObject, Vector2> kvp in bornMap)
+            {
+                GameUtil.ResetChessByMaps(kvp.Key, kvp.Value);
+            }
         }
     }
 
@@ -165,6 +176,7 @@ public class CreateManager : MonoBehaviour
         PoolManager.Push(go);   //放入池工作区进行管理
         go.transform.position = Scene3_UI.cells[x, y].transform.position;
         go.transform.localScale = Vector3.one;
+        bornMap.Add(go, new Vector2((int)x, (int)y));
         return go.transform;
     }
 
@@ -190,5 +202,6 @@ public class CreateManager : MonoBehaviour
         BaseChess.MoveCompleteEvent -= GameController.Instance.UpdateGame;
         BaseChess.MoveCompleteEvent -= Scene3_UI.Instance.UpdateAttrPanel;
         BaseChess.ChooseEvent -= Scene3_UI.Instance.OnChoose;
+        bornMap.Clear();
     }
 }

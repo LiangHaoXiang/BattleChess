@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-    private float allTime;
-    private float stepTime;
+    private static TimeManager instance = null;
+    public static TimeManager Instance { get { return instance; } }
+
+    private static float allTime;
+    private static float stepTime;
     public static float r_AllTime = 0.0f;       //红局时，单位s
     public static float b_AllTime = 0.0f;
     public static float r_StepTime = 0.0f;      //红步时，单位s
     public static float b_StepTime = 0.0f;
 
+    public static event GameOverEventHandlerWithParam TimeUpEventWithParam;
     public static event GameOverEventHandler TimeUpEvent;
 
     void Awake()
     {
-        allTime = 60.0f * 20.0f;
-        stepTime = 60.0f * 3.0f;
+        if (instance == null)
+            instance = this;
+        allTime = 60.0f * 0.3f;
+        stepTime = 60.0f * 0.1f;
 
         r_AllTime = allTime;
         b_AllTime = allTime;
@@ -37,7 +43,8 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEvent("Black");
+                    TimeUpEventWithParam("Black");
+                    TimeUpEvent();
                     r_StepTime = 0;
                 }
                 if (r_AllTime > 0)
@@ -45,7 +52,8 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEvent("Black");
+                    TimeUpEventWithParam("Black");
+                    TimeUpEvent();
                     r_AllTime = 0;
                 }
             }
@@ -56,7 +64,8 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEvent("Red");
+                    TimeUpEventWithParam("Red");
+                    TimeUpEvent();
                     b_StepTime = 0;
                 }
                 if (b_AllTime > 0)
@@ -64,17 +73,26 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEvent("Red");
+                    TimeUpEventWithParam("Red");
+                    TimeUpEvent();
                     b_AllTime = 0;
                 }
             }
         }
 	}
-
+    /// <summary>
+    /// 重置局时与步时
+    /// </summary>
+    public static void ResetAllTime()
+    {
+        r_AllTime = allTime;
+        b_AllTime = allTime;
+        ResetStepTime();
+    }
     /// <summary>
     /// 重置步时
     /// </summary>
-    public void ResetStepTime()
+    public static void ResetStepTime()
     {
         r_StepTime = r_AllTime < stepTime ? r_AllTime : stepTime;  //当局时小于规定步时，那么步时就等于局时
         b_StepTime = b_AllTime < stepTime ? b_AllTime : stepTime;

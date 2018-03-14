@@ -133,6 +133,25 @@ public class GameController : MonoBehaviour
 
     }
 
+    public static void BeginGame()
+    {
+        CreateManager.Instance.InitChessBoard();
+        gameStatus = GameStatus.Going;
+        Instance.UpdateGame();
+    }
+
+    /// <summary>
+    /// 重置游戏数据
+    /// </summary>
+    public static void ResetGame()
+    {
+        IsBattle = false;
+        gameStatus = GameStatus.NotBegin;
+        playing = Playing.None;
+        GameCache.ClearMaps();
+        GameCache.ClearChessVectorDic();
+    }
+
     public void OnDestroy()
     {
         Debug.Log("销毁GameController");

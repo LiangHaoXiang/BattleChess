@@ -93,7 +93,8 @@ public delegate void AddAttrCompleteEventHandler();
 /// <summary>
 /// 游戏结束
 /// </summary>
-public delegate void GameOverEventHandler(string winer);
+public delegate void GameOverEventHandlerWithParam(string winer);
+public delegate void GameOverEventHandler();
 
 /// <summary>
 /// 更新棋局信息完毕
