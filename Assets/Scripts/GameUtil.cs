@@ -232,16 +232,15 @@ public class GameUtil
         Dictionary<GameObject, Vector2> targetMap = GameCache.maps[step];
         foreach (KeyValuePair<GameObject, Vector2> kvp in targetMap)
         {
-            GameUtil.ResetChessByMaps(kvp.Key, kvp.Value);  //还原所有棋子的位置
+            ResetChessByMaps(kvp.Key, kvp.Value);  //还原所有棋子的位置
         }
         Dictionary<GameObject, string> targetAttrMap = GameCache.attrMaps[step];
         foreach (KeyValuePair<GameObject, string> kvp in targetAttrMap)
         {
-            int[] arr = GameUtil.StrAttr2IntArr(kvp.Value);
-            GameUtil.GetChessAttrList(kvp.Key).Hp = arr[0];     //还原所有棋子的属性
-            GameUtil.GetChessAttrList(kvp.Key).Attack = arr[1];
-            GameUtil.GetChessAttrList(kvp.Key).Defence = arr[2];
+            int[] arr = StrAttr2IntArr(kvp.Value);
+            GetChessAttrList(kvp.Key).Hp = arr[0];     //还原所有棋子的属性
+            GetChessAttrList(kvp.Key).Attack = arr[1];
+            GetChessAttrList(kvp.Key).Defence = arr[2];
         }
-
     }
 }

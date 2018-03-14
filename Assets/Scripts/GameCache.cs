@@ -24,6 +24,10 @@ public class GameCache
     /// 记录每回合的所有棋子对应的属性信息
     /// </summary>
     public static List<Dictionary<GameObject, string>> attrMaps;
+    /// <summary>
+    /// 记录阵亡者与对应步数的映射
+    /// </summary>
+    private static Dictionary<GameObject, int> loserStepDic;
 
     public static void SetCoords(GameObject[,] cells)
     {
@@ -61,6 +65,11 @@ public class GameCache
         }
     }
 
+    public static void SetLoserStepDic(GameObject chess, int step)
+    {
+        loserStepDic.Add(chess, step);
+    }
+
     public static Dictionary<GameObject, Vector2> Chess2Vector
     {
         get { return chess2Vector; }
@@ -69,6 +78,11 @@ public class GameCache
     public static Dictionary<Vector2, GameObject> Vector2Chess
     {
         get { return vector2Chess; }
+    }
+
+    public static Dictionary<GameObject, int> LoserStepDic
+    {
+        get { return loserStepDic; }
     }
 
     public static void ClearChessVectorDic()
@@ -129,11 +143,14 @@ public class GameCache
         attrMaps.Add(dic);
     }
 
-    public static void ClearMaps()
+    public static void ClearCache()
     {
         if (maps != null)
             maps.Clear();
         if (attrMaps != null)
             attrMaps.Clear();
+        if (loserStepDic != null)
+            loserStepDic.Clear();
+        ClearChessVectorDic();
     }
 }

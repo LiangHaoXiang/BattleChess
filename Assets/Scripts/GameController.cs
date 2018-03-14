@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
 
     public static event KilledEventHandler KilledEvent;
     public static event UpdateGameDataCompleteEventHandler UpdateGameDataCompleteEvent;
-    public static int replayStep = 0;                   //复盘第几步
+    public static int step = 0;                         //第几步
     public static bool IsBattle = false;                //是否发生战斗
     private static GameObject attacker;                 //攻击方
     private static GameObject defender;                 //被攻击方
@@ -37,11 +37,10 @@ public class GameController : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
     {
         IsBattle = false;
-        replayStep = 0;
+        step = 0;
         gameStatus = GameStatus.NotBegin;
         playing = Playing.None;
-        GameCache.ClearMaps();
-        GameCache.ClearChessVectorDic();
+        GameCache.ClearCache();
 
         if (scene.name.Equals("scene3(Main)"))  //若主场景加载完毕并切换到主场景
         {
@@ -79,6 +78,8 @@ public class GameController : MonoBehaviour
                 //战斗结束后再更新数据
                 IsBattle = false;
                 GameObject loser = GameUtil.Battle(attacker, defender);
+                //这里再写入一个映射 阵亡者与步数的映射，复盘用到
+
                 KilledEvent(loser);
             }
             UpdateBout();
@@ -121,11 +122,13 @@ public class GameController : MonoBehaviour
         GameCache.SetMaps();
         GameCache.SetAttrMaps();
         UpdateGameDataCompleteEvent();
-
+        step++;
     }
 
     public static void BeginGame()
     {
+        IsBattle = false;
+        step = 0;
         CreateManager.Instance.InitChessBoard();
         gameStatus = GameStatus.Going;
         Instance.UpdateGame();
@@ -137,10 +140,10 @@ public class GameController : MonoBehaviour
     public static void ResetGame()
     {
         IsBattle = false;
+        step = 0;
         gameStatus = GameStatus.NotBegin;
         playing = Playing.None;
-        GameCache.ClearMaps();
-        GameCache.ClearChessVectorDic();
+        GameCache.ClearCache();
     }
 
     /// <summary>
@@ -149,7 +152,7 @@ public class GameController : MonoBehaviour
     public static void ReplayModeGame()
     {
         IsBattle = false;
-        replayStep = 0;
+        step = 0;
         gameStatus = GameStatus.Replay;
         playing = Playing.None;
         CreateManager.Instance.InitChessBoard();

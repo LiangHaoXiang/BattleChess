@@ -213,7 +213,7 @@ public class Scene3_UI : MonoBehaviour
 
     public void UpdateStepsLabel()
     {
-        stepsLabel.text = GameController.replayStep + "/" + (GameCache.maps.Count - 1);
+        stepsLabel.text = GameController.step + "/" + (GameCache.maps.Count - 1);
     }
 
     public void OnHpClick()
@@ -361,13 +361,13 @@ public class Scene3_UI : MonoBehaviour
     {
         if (GameController.gameStatus == GameStatus.Replay)
         {
-            GameController.replayStep--;
-            if (GameController.replayStep < 0)
+            GameController.step--;
+            if (GameController.step < 0)
             {
-                GameController.replayStep = 0;
+                GameController.step = 0;
                 return;
             }
-            GameUtil.SetChessBoardByMaps(GameController.replayStep);
+            GameUtil.SetChessBoardByMaps(GameController.step);
             UpdateStepsLabel();
         }
     }
@@ -379,13 +379,13 @@ public class Scene3_UI : MonoBehaviour
     {
         if (GameController.gameStatus == GameStatus.Replay)
         {
-            GameController.replayStep++;
-            if (GameController.replayStep > GameCache.maps.Count - 1)
+            GameController.step++;
+            if (GameController.step > GameCache.maps.Count - 1)
             {
-                GameController.replayStep = GameCache.maps.Count - 1;
+                GameController.step = GameCache.maps.Count - 1;
                 return;
             }
-            GameUtil.SetChessBoardByMaps(GameController.replayStep);
+            GameUtil.SetChessBoardByMaps(GameController.step);
             UpdateStepsLabel();
         }
     }
@@ -397,7 +397,7 @@ public class Scene3_UI : MonoBehaviour
     {
         if (GameController.gameStatus == GameStatus.Replay)
         {
-            GameController.replayStep = 0;
+            GameController.step = 0;
             GameUtil.SetChessBoardByMaps(0);
             UpdateStepsLabel();
         }
@@ -410,7 +410,7 @@ public class Scene3_UI : MonoBehaviour
     {
         if (GameController.gameStatus == GameStatus.Replay)
         {
-            GameController.replayStep = GameCache.maps.Count - 1;
+            GameController.step = GameCache.maps.Count - 1;
             GameUtil.SetChessBoardByMaps(GameCache.maps.Count - 1);
             UpdateStepsLabel();
         }
