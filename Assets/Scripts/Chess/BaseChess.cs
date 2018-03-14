@@ -319,6 +319,7 @@ public abstract class BaseChess : MonoBehaviour
             MoveCompleteEvent += CancelChoose; //订阅重置棋子状态事件
             Scene3_UI.AddAttrCompleteEvent += CancelChoose;
             Scene3_UI.UndoEvent += Reset;
+            Scene3_UI.ReplayModeEvent += Reset;
             TimeManager.TimeUpEvent += Reset;
         }
     }
@@ -338,6 +339,7 @@ public abstract class BaseChess : MonoBehaviour
             MoveCompleteEvent -= CancelChoose;
             Scene3_UI.AddAttrCompleteEvent -= CancelChoose;
             Scene3_UI.UndoEvent -= Reset;
+            Scene3_UI.ReplayModeEvent -= Reset;
             TimeManager.TimeUpEvent -= Reset;
         }
     }

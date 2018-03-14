@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 
     public static event KilledEventHandler KilledEvent;
     public static event UpdateGameDataCompleteEventHandler UpdateGameDataCompleteEvent;
+    public static int replayStep = 0;                   //复盘第几步
     public static bool IsBattle = false;                //是否发生战斗
     private static GameObject attacker;                 //攻击方
     private static GameObject defender;                 //被攻击方
@@ -35,35 +36,25 @@ public class GameController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
     {
-        //if (scene.isLoaded)
-        //{
-            IsBattle = false;
-            gameStatus = GameStatus.NotBegin;
-            playing = Playing.None;
-            GameCache.ClearMaps();
-            GameCache.ClearChessVectorDic();
+        IsBattle = false;
+        replayStep = 0;
+        gameStatus = GameStatus.NotBegin;
+        playing = Playing.None;
+        GameCache.ClearMaps();
+        GameCache.ClearChessVectorDic();
 
-            if (scene.name.Equals("scene3(Main)"))  //若主场景加载完毕并切换到主场景
-            {
-                Debug.Log("主场景已加载完毕并切换到主场景");  //切换场景时，再次进入主场景，加载了两次
-                Scene3_UI.AddAttrCompleteEvent += UpdateBout;
-            }
-            else
-            {
-                BaseChess.SetAttackerEvent -= SetAttacker;
-                BaseChess.SetDefenderEvent -= SetDefender;
-                Scene3_UI.AddAttrCompleteEvent -= UpdateBout;
-            }
-        //}
+        if (scene.name.Equals("scene3(Main)"))  //若主场景加载完毕并切换到主场景
+        {
+            Debug.Log("主场景已加载完毕并切换到主场景");  //切换场景时，再次进入主场景，加载了两次
+            Scene3_UI.AddAttrCompleteEvent += UpdateBout;
+        }
+        else
+        {
+            BaseChess.SetAttackerEvent -= SetAttacker;
+            BaseChess.SetDefenderEvent -= SetDefender;
+            Scene3_UI.AddAttrCompleteEvent -= UpdateBout;
+        }
     }
-
-    void Start () {
-		
-	}
-	
-	void Update () {
-		
-	}
 
     public static void SetAttacker(GameObject chess)
     {
@@ -150,6 +141,18 @@ public class GameController : MonoBehaviour
         playing = Playing.None;
         GameCache.ClearMaps();
         GameCache.ClearChessVectorDic();
+    }
+
+    /// <summary>
+    /// 复盘模式时游戏处理
+    /// </summary>
+    public static void ReplayModeGame()
+    {
+        IsBattle = false;
+        replayStep = 0;
+        gameStatus = GameStatus.Replay;
+        playing = Playing.None;
+        CreateManager.Instance.InitChessBoard();
     }
 
     public void OnDestroy()

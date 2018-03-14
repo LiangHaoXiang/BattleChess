@@ -45,12 +45,14 @@ public class Scene3_UI : MonoBehaviour
     private Text r_Attack;
     private Text r_Defence;
     private Text r_Combat;
+    private Text stepsLabel;
     #endregion
 
     private GameObject curAddChess;
     private AttrBox curAttr;
     public static event AddAttrCompleteEventHandler AddAttrCompleteEvent;
     public static event UndoEventHandler UndoEvent;
+    public static event ReplayModeEventHandler ReplayModeEvent;
 
     void Awake()
     {
@@ -77,8 +79,6 @@ public class Scene3_UI : MonoBehaviour
         GameCache.SetCoords(cells);     //将场景找到的cell作为参数，处理写入映射缓存
 
         beginBtn = GameObject.Find("Canvas/Middle/BeginBtn");
-        rightGameMode = GameObject.Find("Canvas/Right/GameMode");
-        rightReplayMode = GameObject.Find("Canvas/Right/ReplayMode");
         addAtrrPanel = GameObject.Find("Canvas/Middle/AddAttrPanel");
         addChessName = GameObject.Find("Canvas/Middle/AddAttrPanel/ChessName").GetComponent<Text>();
         addHpValue = GameObject.Find("Canvas/Middle/AddAttrPanel/Grid/Hp/Value").GetComponent<Text>();
@@ -87,6 +87,8 @@ public class Scene3_UI : MonoBehaviour
         endPanel = GameObject.Find("Canvas/Middle/EndPanel");
         winer = GameObject.Find("Canvas/Middle/EndPanel/ResultLabel").GetComponent<Text>();
         /******************右******************/
+        rightGameMode = GameObject.Find("Canvas/Right/GameMode");
+        rightReplayMode = GameObject.Find("Canvas/Right/ReplayMode");
         blackDetailPanel = GameObject.Find("Canvas/Right/BlackAttrDetail");
         b_Name = blackDetailPanel.transform.FindChild("ChessName").GetComponent<Text>();
         b_Hp = blackDetailPanel.transform.FindChild("Grid/Hp/Value").GetComponent<Text>();
@@ -99,13 +101,18 @@ public class Scene3_UI : MonoBehaviour
         r_Attack = redDetailPanel.transform.FindChild("Grid/Attack/Value").GetComponent<Text>();
         r_Defence = redDetailPanel.transform.FindChild("Grid/Defence/Value").GetComponent<Text>();
         r_Combat = redDetailPanel.transform.FindChild("Combat/Value").GetComponent<Text>();
+        stepsLabel = rightReplayMode.transform.FindChild("Step/StepsLabel").GetComponent<Text>();
 
         AddAttrCompleteEvent += HideAddAttrPanel;
         AddAttrCompleteEvent += HideAttrPanel;
-        TimeManager.TimeUpEventWithParam += ShowEndPanel;
+        ReplayModeEvent += ResetChessBoardPoints;
+        ReplayModeEvent += UpdateStepsLabel;
         UndoEvent += ResetChessBoardPoints;
+        UndoEvent += UpdateAttrPanel;
+        TimeManager.TimeUpEventWithParam += ShowEndPanel;
         TimeManager.TimeUpEvent += ResetChessBoardPoints;
         TimeManager.TimeUpEvent += HideAddAttrPanel;
+        
     }
 
     public List<GameObject> chessList;
@@ -152,6 +159,7 @@ public class Scene3_UI : MonoBehaviour
     /// </summary>
     public void OnBeginClick()
     {
+        TimeManager.ResetAllTime();
         GameController.BeginGame();
         beginBtn.SetActive(false);
     }
@@ -201,6 +209,11 @@ public class Scene3_UI : MonoBehaviour
     {
         AttrBox attrBox = GameUtil.GetChessAttrList(chess);
         SetAttrTexts(attrBox, chess);
+    }
+
+    public void UpdateStepsLabel()
+    {
+        stepsLabel.text = GameController.replayStep + "/" + (GameCache.maps.Count - 1);
     }
 
     public void OnHpClick()
@@ -294,8 +307,18 @@ public class Scene3_UI : MonoBehaviour
     {
         HideEndPanel();
         GameController.ResetGame();
-        TimeManager.ResetAllTime();
         OnBeginClick();
+    }
+
+    /// <summary>
+    /// 复盘模式
+    /// </summary>
+    public void OnReplayModeClick()
+    {
+        SetMode(false);
+        HideEndPanel();
+        GameController.ReplayModeGame();
+        ReplayModeEvent();
     }
 
     /// <summary>
@@ -313,18 +336,16 @@ public class Scene3_UI : MonoBehaviour
     {
         if (GameCache.maps.Count >= 3)
         {
-            //回合回退
+            //回合状态回退
             if (GameController.playing == Playing.OnRed || GameController.playing == Playing.RedAdding)
                 GameController.playing = Playing.OnRed;
             else
                 GameController.playing = Playing.OnBlack;
-            Dictionary<GameObject, Vector2> temp = GameCache.maps[GameCache.maps.Count - 1 - 2];
-            foreach (KeyValuePair<GameObject, Vector2> kvp in temp)
-            {
-                GameUtil.ResetChessByMaps(kvp.Key, kvp.Value);
-            }
+            //棋谱回退 并移除回退前两步信息
+            GameUtil.SetChessBoardByMaps(GameCache.maps.Count - 1 - 2);
             GameCache.maps.RemoveRange(GameCache.maps.Count - 2, 2);
-            GameCache.UpdateChessData();
+            GameCache.attrMaps.RemoveRange(GameCache.attrMaps.Count - 2, 2);
+            GameCache.UpdateChessData(); //更新映射关系，但不计入图谱
             UndoEvent();
         }
         else
@@ -333,9 +354,73 @@ public class Scene3_UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 上一步
+    /// </summary>
+    public void OnPreStepClick()
+    {
+        if (GameController.gameStatus == GameStatus.Replay)
+        {
+            GameController.replayStep--;
+            if (GameController.replayStep < 0)
+            {
+                GameController.replayStep = 0;
+                return;
+            }
+            GameUtil.SetChessBoardByMaps(GameController.replayStep);
+            UpdateStepsLabel();
+        }
+    }
+
+    /// <summary>
+    /// 下一步
+    /// </summary>
+    public void OnNextStepClick()
+    {
+        if (GameController.gameStatus == GameStatus.Replay)
+        {
+            GameController.replayStep++;
+            if (GameController.replayStep > GameCache.maps.Count - 1)
+            {
+                GameController.replayStep = GameCache.maps.Count - 1;
+                return;
+            }
+            GameUtil.SetChessBoardByMaps(GameController.replayStep);
+            UpdateStepsLabel();
+        }
+    }
+
+    /// <summary>
+    /// 开局
+    /// </summary>
+    public void OnBeginStepClick()
+    {
+        if (GameController.gameStatus == GameStatus.Replay)
+        {
+            GameController.replayStep = 0;
+            GameUtil.SetChessBoardByMaps(0);
+            UpdateStepsLabel();
+        }
+    }
+
+    /// <summary>
+    /// 终局
+    /// </summary>
+    public void OnEndStepClick()
+    {
+        if (GameController.gameStatus == GameStatus.Replay)
+        {
+            GameController.replayStep = GameCache.maps.Count - 1;
+            GameUtil.SetChessBoardByMaps(GameCache.maps.Count - 1);
+            UpdateStepsLabel();
+        }
+    }
 
     public void OnDestroy()
     {
+        ReplayModeEvent -= ResetChessBoardPoints;
+        ReplayModeEvent -= UpdateStepsLabel;
+        UndoEvent -= UpdateAttrPanel;
         UndoEvent -= ResetChessBoardPoints;
         AddAttrCompleteEvent -= HideAddAttrPanel;
         AddAttrCompleteEvent -= HideAttrPanel;

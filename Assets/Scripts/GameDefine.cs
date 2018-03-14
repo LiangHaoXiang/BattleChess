@@ -104,6 +104,10 @@ public delegate void UpdateGameDataCompleteEventHandler();
 /// 悔棋事件
 /// </summary>
 public delegate void UndoEventHandler();
+/// <summary>
+/// 复盘模式事件
+/// </summary>
+public delegate void ReplayModeEventHandler();
 
 public class GameDefine{
 
