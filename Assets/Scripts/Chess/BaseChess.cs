@@ -142,7 +142,7 @@ public abstract class BaseChess : MonoBehaviour
     /// <summary>
     /// 被杀
     /// </summary>
-    public void Killed(GameObject chess)
+    public virtual void Killed(GameObject chess)
     {
         if (chess == gameObject)
         {
@@ -321,6 +321,9 @@ public abstract class BaseChess : MonoBehaviour
             Scene3_UI.UndoEvent += Reset;
             Scene3_UI.ReplayModeEvent += Reset;
             TimeManager.TimeUpEvent += Reset;
+            Chess_Boss.BossKilledEvent += Reset;
+            Scene3_UI.GiveUpEvent += Reset;
+            Scene3_UI.SuePeaceEvent += Reset;
         }
     }
     /// <summary>
@@ -341,6 +344,9 @@ public abstract class BaseChess : MonoBehaviour
             Scene3_UI.UndoEvent -= Reset;
             Scene3_UI.ReplayModeEvent -= Reset;
             TimeManager.TimeUpEvent -= Reset;
+            Chess_Boss.BossKilledEvent -= Reset;
+            Scene3_UI.GiveUpEvent -= Reset;
+            Scene3_UI.SuePeaceEvent -= Reset;
         }
     }
 

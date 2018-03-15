@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class Chess_Boss : BaseChess
 {
+    public static event GameOverEventHandlerWithParam BossKilledEventWithParam;
+    public static event GameOverEventHandler BossKilledEvent;
+
     public override void Awake()
     {
         if (gameObject.tag == "Red")
@@ -43,7 +46,7 @@ public class Chess_Boss : BaseChess
                 Debug.Log("将军！！");
                 chessSituationState = ChessSituationState.BeAttacked;
                 //检测是否被将死
-                //这时就要完善假设走步的逻辑了。
+                //这时就要完善假设走步的逻辑了，处理起来比较庞大。
                 break;
             }
         }
@@ -53,33 +56,7 @@ public class Chess_Boss : BaseChess
     /// </summary>
     public bool NoWayOut()
     {
-        #region 不太对
-        ////如果是正在被将军的时候，
-        //if (BeAttackingEvent() == true)
-        //{
-
-        //    //将军可移动点数为0，就算将死
-        //    if (CanMovePoints().Count == 0)
-        //        return true;
-
-        //    //或将军所有能走的点都存在敌方能走的位置，也算将死
-        //    Vector2[] canMovePoints = CanMovePoints().ToArray();
-        //    int isAllExist = 0;
-        //    //for (int i = 0; i < canMovePoints.Length; i++)
-        //    //{
-        //    //    //如果存在
-        //    //    if(canMovePoints[i]==)
-        //    //    isAllExist++;
-        //    //}
-        //    if (isAllExist == canMovePoints.Length)
-        //        return true;
-        //    else
-        //        return false;
-
-        //    //若无论下一步怎么走都还无法避免正在被将军的状态，那就认为是将死军
-        //}
-        //else
-        #endregion
+        //若无论下一步怎么走都还无法避免正在被将军的状态，那就认为是被将死
         if (chessSituationState == ChessSituationState.BeAttacked)
         {
 
@@ -211,6 +188,16 @@ public class Chess_Boss : BaseChess
         }
     }
 
+    public override void Killed(GameObject chess)
+    {
+        base.Killed(chess);
+        if (chess == gameObject)
+        {
+            GameController.gameStatus = GameStatus.End;
+            BossKilledEventWithParam(gameObject.tag);
+            BossKilledEvent();
+        }
+    }
 
     /// <summary>
     /// 增加监听检测被将军事件

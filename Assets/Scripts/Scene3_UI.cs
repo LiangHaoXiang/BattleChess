@@ -55,6 +55,8 @@ public class Scene3_UI : MonoBehaviour
     public static event AddAttrCompleteEventHandler AddAttrCompleteEvent;
     public static event UndoEventHandler UndoEvent;
     public static event ReplayModeEventHandler ReplayModeEvent;
+    public static event GameOverEventHandler GiveUpEvent;
+    public static event GameOverEventHandler SuePeaceEvent;
 
     void Awake()
     {
@@ -116,7 +118,9 @@ public class Scene3_UI : MonoBehaviour
         TimeManager.TimeUpEventWithParam += ShowEndPanel;
         TimeManager.TimeUpEvent += ResetChessBoardPoints;
         TimeManager.TimeUpEvent += HideAddAttrPanel;
-        
+        Chess_Boss.BossKilledEventWithParam += ShowEndPanel;
+        Chess_Boss.BossKilledEvent += ResetChessBoardPoints;
+        Chess_Boss.BossKilledEvent += HideAddAttrPanel;
     }
 
     public List<GameObject> chessList;
@@ -287,16 +291,16 @@ public class Scene3_UI : MonoBehaviour
         }
     }
 
-    public void ShowEndPanel(string winerStr)
+    public void ShowEndPanel(string loserStr)
     {
         endPanel.SetActive(true);
-        if (winerStr == "Red")
-        {
-            winer.text = "红方胜";
-        }
-        else if (winerStr == "Black")
+        if (loserStr == "Red")
         {
             winer.text = "黑方胜";
+        }
+        else if (loserStr == "Black")
+        {
+            winer.text = "红方胜";
         }
         else
         {
@@ -361,6 +365,31 @@ public class Scene3_UI : MonoBehaviour
         {
             //GameObject.Find("UndoButton").GetComponent<Button>().enabled = false;
         }
+    }
+
+    /// <summary>
+    /// 认输
+    /// </summary>
+    public void OnGiveUpClick()
+    {
+        GiveUpEvent();
+        if (GameController.playing == Playing.OnRed || GameController.playing == Playing.RedAdding)
+            ShowEndPanel("Red");
+        else
+            ShowEndPanel("Black");
+        ResetChessBoardPoints();
+        HideAddAttrPanel();
+    }
+
+    /// <summary>
+    /// 求和
+    /// </summary>
+    public void OnSuePeaceClick()
+    {
+        SuePeaceEvent();
+        ShowEndPanel("Peace");
+        ResetChessBoardPoints();
+        HideAddAttrPanel();
     }
 
     /// <summary>
@@ -436,5 +465,8 @@ public class Scene3_UI : MonoBehaviour
         TimeManager.TimeUpEventWithParam -= ShowEndPanel;
         TimeManager.TimeUpEvent -= ResetChessBoardPoints;
         TimeManager.TimeUpEvent -= HideAddAttrPanel;
+        Chess_Boss.BossKilledEventWithParam -= ShowEndPanel;
+        Chess_Boss.BossKilledEvent -= ResetChessBoardPoints;
+        Chess_Boss.BossKilledEvent -= HideAddAttrPanel;
     }
 }

@@ -43,7 +43,7 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEventWithParam("Black");
+                    TimeUpEventWithParam("Red");
                     TimeUpEvent();
                     r_StepTime = 0;
                 }
@@ -52,7 +52,7 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEventWithParam("Black");
+                    TimeUpEventWithParam("Red");
                     TimeUpEvent();
                     r_AllTime = 0;
                 }
@@ -64,7 +64,7 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEventWithParam("Red");
+                    TimeUpEventWithParam("Black");
                     TimeUpEvent();
                     b_StepTime = 0;
                 }
@@ -73,7 +73,7 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     GameController.gameStatus = GameStatus.End;
-                    TimeUpEventWithParam("Red");
+                    TimeUpEventWithParam("Black");
                     TimeUpEvent();
                     b_AllTime = 0;
                 }
