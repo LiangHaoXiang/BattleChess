@@ -79,7 +79,7 @@ public class GameController : MonoBehaviour
                 IsBattle = false;
                 GameObject loser = GameUtil.Battle(attacker, defender);
                 //这里再写入一个映射 阵亡者与步数的映射，复盘用到
-
+                GameCache.SetLoserStepDic(loser, step);
                 KilledEvent(loser);
             }
             UpdateBout();

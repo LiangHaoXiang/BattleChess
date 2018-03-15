@@ -76,16 +76,20 @@ public class GameUtil
     /// <param name="defender">防守方</param>
     /// <returns>阵亡者</returns>
     public static GameObject Battle(GameObject attacker, GameObject defender)
-    {
+    {//这里将帅吃子会加生命45，要找出原因
         AttrBox a = GetChessAttrList(attacker);
         AttrBox b = GetChessAttrList(defender);
         int a_damage = a.Attack <= b.Defence ? 1 : a.Attack - b.Defence;    //a对b造成的伤害
         int b_damage = b.Attack <= a.Defence ? 1 : b.Attack - a.Defence;    //b对a造成的伤害
-        int a_times = b.Hp / a_damage;      //a打死b所需回合数
-        int b_times = a.Hp / b_damage;      //b打死a所需回合数
+        int a_times = b.Hp / a_damage == 0 ? 1 : b.Hp / a_damage;      //a打死b所需回合数
+        int b_times = a.Hp / b_damage == 0 ? 1 : a.Hp / b_damage;      //b打死a所需回合数
         if (a_times <= b_times)
         {
-            a.Hp -= b_damage * (a_times - 1);
+            //Debug.Log("a_times = " + a_times);      //0
+            //Debug.Log("b_times = " + b_times);      //0
+            //Debug.Log("a.Hp = " + a.Hp);            //1
+            //Debug.Log("b_damage = " + b_damage);    //45
+            a.Hp -= (b_damage * (a_times - 1));
             b.Hp = 0;
             return defender;
         }
@@ -234,6 +238,11 @@ public class GameUtil
         {
             ResetChessByMaps(kvp.Key, kvp.Value);  //还原所有棋子的位置
         }
+        foreach (KeyValuePair<GameObject, int> kvp in GameCache.LoserStepDic)
+        {
+            if (kvp.Value <= step)      //在此步前阵亡的棋子都回收起来
+                PoolManager.Restore(kvp.Key);
+        }
         Dictionary<GameObject, string> targetAttrMap = GameCache.attrMaps[step];
         foreach (KeyValuePair<GameObject, string> kvp in targetAttrMap)
         {
@@ -242,5 +251,49 @@ public class GameUtil
             GetChessAttrList(kvp.Key).Attack = arr[1];
             GetChessAttrList(kvp.Key).Defence = arr[2];
         }
+    }
+
+    /// <summary>
+    /// 比较此步与前一步所有棋子的属性差异
+    /// </summary>
+    /// <param name="step"></param>
+    /// <returns>最多返回两句描述，因为两步间最多存在两棋子属性有差异</returns>
+    public static string[] CompareStepAttr(int step)
+    {
+        if (step == 0)
+            return new string[] { "", "" };
+        string[] desc = new string[2];
+        desc[0] = "";
+        desc[1] = "";
+        int index = 0;
+        Dictionary<GameObject, string> curAttrMap = GameCache.attrMaps[step];
+        Dictionary<GameObject, string> preAttrMap = GameCache.attrMaps[step - 1];
+        foreach (KeyValuePair<GameObject, string> kvp in curAttrMap)
+        {
+            string preAttrStr = preAttrMap[kvp.Key];
+            if (kvp.Value != preAttrStr) //属性有差异 且 此步前不在阵亡者列表中
+            {
+                if (GameCache.LoserStepDic.ContainsKey(kvp.Key) 
+                    && GameCache.LoserStepDic[kvp.Key] <= step)
+                    continue;
+                desc[index] = GetChineseChessName(kvp.Key);
+                int[] curArr = StrAttr2IntArr(kvp.Value);
+                int[] preArr = StrAttr2IntArr(preAttrStr);
+                int deltaHp = curArr[0] - preArr[0];
+                int deltaAttack = curArr[1] - preArr[1];
+                int deltaDefence = curArr[2] - preArr[2];
+                if (deltaHp > 0)
+                    desc[index] = desc[index] + " " + "生命提升" + deltaHp;
+                else if (deltaHp<0)
+                    desc[index] = desc[index] + " " + "生命损失" + Mathf.Abs(deltaHp);
+                if (deltaAttack > 0)
+                    desc[index] = desc[index] + " " + "攻击提升" + deltaAttack;
+                if (deltaDefence > 0)
+                    desc[index] = desc[index] + " " + "防御提升" + deltaDefence;
+
+                index++;
+            }
+        }
+        return desc;
     }
 }

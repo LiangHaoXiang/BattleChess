@@ -38,7 +38,8 @@ public class PoolManager : MonoBehaviour
     public static void Take(GameObject chess)
     {
         work_List.Add(chess);
-        restore_List.Remove(chess);
+        if (restore_List.Contains(chess))
+            restore_List.Remove(chess);
         SetParentToWork(chess);
         chess.SetActive(true);
         TakeEvent(chess);//把取消订阅的事件全订阅回来
@@ -50,7 +51,8 @@ public class PoolManager : MonoBehaviour
     public static void Restore(GameObject chess)
     {
         restore_List.Add(chess);
-        work_List.Remove(chess);
+        if (work_List.Contains(chess))
+            work_List.Remove(chess);
         SetParentToRestore(chess);
         chess.SetActive(false);
         RestoreEvent(chess);

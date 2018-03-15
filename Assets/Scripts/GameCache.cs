@@ -65,9 +65,11 @@ public class GameCache
         }
     }
 
-    public static void SetLoserStepDic(GameObject chess, int step)
+    public static void SetLoserStepDic(GameObject loser, int step)
     {
-        loserStepDic.Add(chess, step);
+        if (loserStepDic == null)
+            loserStepDic = new Dictionary<GameObject, int>();
+        loserStepDic.Add(loser, step);
     }
 
     public static Dictionary<GameObject, Vector2> Chess2Vector

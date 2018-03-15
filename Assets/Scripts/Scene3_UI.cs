@@ -17,6 +17,8 @@ public class Scene3_UI : MonoBehaviour
     private Text blackStepTime;
     private Text redAllTime;
     private Text redStepTime;
+    private Text lostHp;
+    private Text addAttr;
     #endregion
     #region 中
     private Transform GridsTrans;
@@ -64,6 +66,8 @@ public class Scene3_UI : MonoBehaviour
         blackStepTime = GameObject.Find("Canvas/Left/GameMode/Black/StepTime/Value").GetComponent<Text>();
         redAllTime = GameObject.Find("Canvas/Left/GameMode/Red/AllTime/Value").GetComponent<Text>();
         redStepTime = GameObject.Find("Canvas/Left/GameMode/Red/StepTime/Value").GetComponent<Text>();
+        lostHp = GameObject.Find("Canvas/Left/ReplayMode/LostLife/Label").GetComponent<Text>();
+        addAttr = GameObject.Find("Canvas/Left/ReplayMode/AddAttr/Label").GetComponent<Text>();
         /*****************中******************/
         GridsTrans = GameObject.Find("Grids").transform;
         cells = new GameObject[9, 10];
@@ -106,7 +110,7 @@ public class Scene3_UI : MonoBehaviour
         AddAttrCompleteEvent += HideAddAttrPanel;
         AddAttrCompleteEvent += HideAttrPanel;
         ReplayModeEvent += ResetChessBoardPoints;
-        ReplayModeEvent += UpdateStepsLabel;
+        ReplayModeEvent += UpdateReplayModeText;
         UndoEvent += ResetChessBoardPoints;
         UndoEvent += UpdateAttrPanel;
         TimeManager.TimeUpEventWithParam += ShowEndPanel;
@@ -123,6 +127,8 @@ public class Scene3_UI : MonoBehaviour
         blackStepTime.text = "00:00";
         redAllTime.text = "00:00";
         redStepTime.text = "00:00";
+        lostHp.text = "";
+        addAttr.text = "";
         addAtrrPanel.SetActive(false);
         addHpValue.text = "50";
         addAttackValue.text = "5";
@@ -211,8 +217,11 @@ public class Scene3_UI : MonoBehaviour
         SetAttrTexts(attrBox, chess);
     }
 
-    public void UpdateStepsLabel()
+    public void UpdateReplayModeText()
     {
+        string[] arr = GameUtil.CompareStepAttr(GameController.step);
+        lostHp.text = arr[0];
+        addAttr.text = arr[1];
         stepsLabel.text = GameController.step + "/" + (GameCache.maps.Count - 1);
     }
 
@@ -368,7 +377,7 @@ public class Scene3_UI : MonoBehaviour
                 return;
             }
             GameUtil.SetChessBoardByMaps(GameController.step);
-            UpdateStepsLabel();
+            UpdateReplayModeText();
         }
     }
 
@@ -386,7 +395,7 @@ public class Scene3_UI : MonoBehaviour
                 return;
             }
             GameUtil.SetChessBoardByMaps(GameController.step);
-            UpdateStepsLabel();
+            UpdateReplayModeText();
         }
     }
 
@@ -399,7 +408,7 @@ public class Scene3_UI : MonoBehaviour
         {
             GameController.step = 0;
             GameUtil.SetChessBoardByMaps(0);
-            UpdateStepsLabel();
+            UpdateReplayModeText();
         }
     }
 
@@ -412,14 +421,14 @@ public class Scene3_UI : MonoBehaviour
         {
             GameController.step = GameCache.maps.Count - 1;
             GameUtil.SetChessBoardByMaps(GameCache.maps.Count - 1);
-            UpdateStepsLabel();
+            UpdateReplayModeText();
         }
     }
 
     public void OnDestroy()
     {
         ReplayModeEvent -= ResetChessBoardPoints;
-        ReplayModeEvent -= UpdateStepsLabel;
+        ReplayModeEvent -= UpdateReplayModeText;
         UndoEvent -= UpdateAttrPanel;
         UndoEvent -= ResetChessBoardPoints;
         AddAttrCompleteEvent -= HideAddAttrPanel;

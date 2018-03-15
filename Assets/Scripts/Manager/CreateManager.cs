@@ -156,7 +156,6 @@ public class CreateManager : MonoBehaviour
         }
         else //跑这里一般都是再来一盘和复盘的时候。
         {
-            Debug.Log("从池里面提取出来");
             foreach(KeyValuePair<GameObject, Vector2> kvp in bornMap)
             {
                 GameUtil.ResetChessByMaps(kvp.Key, kvp.Value);
