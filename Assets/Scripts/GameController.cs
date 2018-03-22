@@ -34,6 +34,14 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
     {
         IsBattle = false;

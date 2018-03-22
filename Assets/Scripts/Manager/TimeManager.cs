@@ -21,8 +21,8 @@ public class TimeManager : MonoBehaviour
     {
         if (instance == null)
             instance = this;
-        allTime = 60.0f * 0.4f;
-        stepTime = 60.0f * 0.2f;
+        allTime = 60.0f * 20.0f;
+        stepTime = 60.0f * 1.5f;
 
         r_AllTime = allTime;
         b_AllTime = allTime;
